@@ -1,0 +1,62 @@
+// Importación de fuentes elegantes para boda
+@use 'sass:string';
+
+// Google Fonts - Selección elegante y romántica para boda
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+// Fuentes elegantes y románticas para boda
+// Playfair Display: Perfecta para títulos principales, elegante y sofisticada
+// Cormorant Garamond: Ideal para subtítulos y elementos destacados, muy romántica
+// Lora: Excelente para texto de cuerpo, legible y con personalidad
+// Crimson Text: Perfecta para citas y elementos especiales
+// Source Sans 3: Moderna y limpia para elementos de interfaz
+
+// Variables CSS para fuentes de boda
+:root {
+  --font-playfair: 'Playfair Display', serif;
+  --font-cormorant: 'Cormorant Garamond', serif;
+  --font-lora: 'Lora', serif;
+  --font-crimson: 'Crimson Text', serif;
+  --font-source-sans: 'Source Sans 3', sans-serif;
+}
+
+// Variables SCSS para uso en componentes de boda
+$font-principal: 'Playfair Display', serif;      // Para títulos principales, elegante y sofisticada
+$font-secondary: 'Lora', serif;                  // Para texto de cuerpo, legible y con carácter
+$font-accent: 'Cormorant Garamond', serif;       // Para subtítulos y elementos románticos
+$font-special: 'Crimson Text', serif;            // Para citas, votos y elementos especiales
+$font-interface: 'Source Sans 3', sans-serif;    // Para elementos de UI y navegación moderna
+
+// Mixins para facilitar el uso en el sitio de boda
+@mixin heading-font($weight: 600) {
+  font-family: $font-principal;
+  font-weight: $weight;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@mixin body-font($weight: 400) {
+  font-family: $font-secondary;
+  font-weight: $weight;
+  line-height: 1.7;
+}
+
+@mixin accent-font($weight: 500) {
+  font-family: $font-accent;
+  font-weight: $weight;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+@mixin special-font($weight: 400) {
+  font-family: $font-special;
+  font-weight: $weight;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+@mixin interface-font($weight: 400) {
+  font-family: $font-interface;
+  font-weight: $weight;
+  line-height: 1.5;
+}
