@@ -233,6 +233,11 @@ const toggleAudio = () => {
   border-radius: 8px;
   box-shadow: 0 15px 35px rgba($dark-teal, 0.15);
   border: 1px solid rgba($dusty-rose, 0.3);
+  z-index: 1;
+  
+  .envelope-opened & {
+    z-index: 0;
+  }
 }
 
 .envelope-front {
@@ -246,6 +251,10 @@ const toggleAudio = () => {
   z-index: 2;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: bottom;
+  
+  .envelope-opened & {
+    z-index: 1;
+  }
 }
 
 .envelope-flap {
@@ -307,6 +316,13 @@ const toggleAudio = () => {
   align-items: center;
   text-align: center;
   position: relative;
+  transition: opacity 0.5s ease-out;
+  
+  .envelope-opened & {
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
 }
 
 .to-label {
@@ -373,7 +389,7 @@ const toggleAudio = () => {
   &.letter-visible {
     transform: translateY(-80px) scale(1.15);
     opacity: 1;
-    z-index: 10;
+    z-index: 15;
   }
 }
 
