@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import CountdownMusicPlayer from '@/components/CountdownMusicPlayer.vue'
 
 const isCardOpen = ref(false)
 const audioRef = ref<HTMLAudioElement | null>(null)
@@ -8,7 +9,7 @@ const isAudioPlaying = ref(false)
 const openCard = async () => {
   if (!isCardOpen.value) {
     isCardOpen.value = true
-    
+
     // Reproducir música después de un pequeño delay para la animación
     setTimeout(async () => {
       if (audioRef.value) {
@@ -135,13 +136,17 @@ const toggleAudio = () => {
         <i v-else class="fas fa-play"></i>
       </button>
     </div>
+    
+    <!-- Countdown Music Player Component -->
+    <CountdownMusicPlayer 
+      v-if="isCardOpen"
+      :is-audio-playing="isAudioPlaying"
+      @toggle-audio="toggleAudio"
+    />
   </main>
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/colorVariables.module.scss';
-@import '@/styles/fonts.modules.scss';
-
 .invitation-container {
   min-height: 100vh;
   background: linear-gradient(135deg, $cream-white 0%, lighten($cream-white, 2%) 100%);
@@ -161,7 +166,7 @@ const toggleAudio = () => {
     right: 0;
     bottom: 0;
     background-image: radial-gradient(circle at 20% 80%, rgba($dusty-rose, 0.03) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 20%, rgba($dark-teal, 0.03) 0%, transparent 50%);
+      radial-gradient(circle at 80% 20%, rgba($dark-teal, 0.03) 0%, transparent 50%);
     pointer-events: none;
   }
 }
@@ -170,7 +175,7 @@ const toggleAudio = () => {
   perspective: 1200px;
   width: 100%;
   max-width: 380px;
-  
+
   @media (min-width: 768px) {
     max-width: 450px;
   }
@@ -183,11 +188,11 @@ const toggleAudio = () => {
   transform-style: preserve-3d;
   transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  
+
   @media (min-width: 768px) {
     height: 320px;
   }
-  
+
   @media (min-width: 1024px) {
     height: 350px;
   }
@@ -195,16 +200,16 @@ const toggleAudio = () => {
   &.envelope-opened {
     transform: scale(1.1) translateY(-10px);
     cursor: default;
-    
+
     .envelope-flap {
       transform: rotateX(-180deg);
     }
-    
+
     .envelope-front {
       transform: translateY(100%) rotateX(-15deg);
       opacity: 0.3;
     }
-    
+
     .letter {
       transform: translateY(-50px) scale(1.05);
       opacity: 1;
@@ -214,11 +219,11 @@ const toggleAudio = () => {
 
   &:hover:not(.envelope-opened) {
     transform: translateY(-8px) scale(1.03);
-    
+
     .envelope-front {
       box-shadow: 0 25px 50px rgba($dark-teal, 0.2);
     }
-    
+
     .envelope-flap {
       transform: rotateX(-10deg);
     }
@@ -234,7 +239,7 @@ const toggleAudio = () => {
   box-shadow: 0 15px 35px rgba($dark-teal, 0.15);
   border: 1px solid rgba($dusty-rose, 0.3);
   z-index: 1;
-  
+
   .envelope-opened & {
     z-index: 0;
   }
@@ -251,7 +256,7 @@ const toggleAudio = () => {
   z-index: 2;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: bottom;
-  
+
   .envelope-opened & {
     z-index: 1;
   }
@@ -269,7 +274,7 @@ const toggleAudio = () => {
   z-index: 3;
   border-radius: 8px 8px 0 0;
   border: 1px solid rgba($dusty-rose, 0.3);
-  
+
   // Flap triangle shape
   clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
@@ -295,7 +300,7 @@ const toggleAudio = () => {
   background: $cream-white;
   border-radius: 50%;
   position: relative;
-  
+
   &::before {
     content: '♥';
     position: absolute;
@@ -317,7 +322,7 @@ const toggleAudio = () => {
   text-align: center;
   position: relative;
   transition: opacity 0.5s ease-out;
-  
+
   .envelope-opened & {
     opacity: 0;
     z-index: 1;
@@ -330,7 +335,7 @@ const toggleAudio = () => {
   font-size: 0.9rem;
   color: rgba($dark-teal, 0.6);
   margin: 0 0 0.5rem 0;
-  
+
   @media (min-width: 768px) {
     font-size: 1rem;
   }
@@ -341,7 +346,7 @@ const toggleAudio = () => {
   font-size: 1.3rem;
   color: $dark-teal;
   margin: 0 0 1.5rem 0;
-  
+
   @media (min-width: 768px) {
     font-size: 1.5rem;
   }
@@ -358,8 +363,15 @@ const toggleAudio = () => {
 }
 
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .letter {
@@ -367,7 +379,8 @@ const toggleAudio = () => {
   top: 2%;
   left: 2%;
   width: 96%;
-  height: 800px;
+  height: 70vh;
+  max-height: 600px;
   background: linear-gradient(135deg, $cream-white 0%, lighten($cream-white, 2%) 100%);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba($dark-teal, 0.2);
@@ -378,16 +391,22 @@ const toggleAudio = () => {
   z-index: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  
+
   @media (min-width: 768px) {
-    height: 850px;
+    height: 75vh;
+    max-height: 700px;
     left: 3%;
     width: 94%;
     top: 1%;
   }
-  
+
+  @media (min-width: 1024px) {
+    height: 80vh;
+    max-height: 750px;
+  }
+
   &.letter-visible {
-    transform: translateY(-80px) scale(1.15);
+    transform: translateY(-40px) scale(1.05);
     opacity: 1;
     z-index: 15;
   }
@@ -403,7 +422,7 @@ const toggleAudio = () => {
   text-align: center;
   position: relative;
   gap: 1rem;
-  
+
   @media (min-width: 768px) {
     padding: 1.8rem 1.5rem;
     gap: 1.2rem;
@@ -414,19 +433,19 @@ const toggleAudio = () => {
   position: absolute;
   width: 60px;
   height: 60px;
-  
+
   &::before,
   &::after {
     content: '';
     position: absolute;
     border-radius: 50%;
   }
-  
+
   &.top {
     top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    
+
     &::before {
       width: 8px;
       height: 8px;
@@ -435,7 +454,7 @@ const toggleAudio = () => {
       left: 50%;
       transform: translateX(-50%);
     }
-    
+
     &::after {
       width: 4px;
       height: 4px;
@@ -445,12 +464,12 @@ const toggleAudio = () => {
       transform: translateX(-50%);
     }
   }
-  
+
   &.bottom {
     bottom: 1rem;
     left: 50%;
     transform: translateX(-50%) rotate(180deg);
-    
+
     &::before {
       width: 6px;
       height: 6px;
@@ -459,7 +478,7 @@ const toggleAudio = () => {
       left: 50%;
       transform: translateX(-50%);
     }
-    
+
     &::after {
       width: 3px;
       height: 3px;
@@ -487,7 +506,7 @@ const toggleAudio = () => {
   border: 1px solid rgba($dusty-rose, 0.3);
   animation: pulse 2.5s infinite;
   box-shadow: 0 5px 15px rgba($dark-teal, 0.1);
-  
+
   @media (min-width: 768px) {
     font-size: 0.9rem;
     bottom: -60px;
@@ -495,8 +514,17 @@ const toggleAudio = () => {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
 }
 
 // Letter content styles
@@ -505,7 +533,7 @@ const toggleAudio = () => {
   font-size: 1.4rem;
   color: $dark-teal;
   margin: 0.3rem 0 0.8rem 0;
-  
+
   @media (min-width: 768px) {
     font-size: 1.8rem;
     margin: 0.5rem 0 1rem 0;
@@ -514,26 +542,26 @@ const toggleAudio = () => {
 
 .bible-verse {
   margin: 0.5rem 0;
-  
+
   .verse-text {
     @include special-font(400);
     font-size: 0.8rem;
     color: $warm-brown;
     line-height: 1.3;
     margin-bottom: 0.2rem;
-    
+
     @media (min-width: 768px) {
       font-size: 0.9rem;
       line-height: 1.4;
       margin-bottom: 0.3rem;
     }
   }
-  
+
   .verse-reference {
     @include interface-font(500);
     font-size: 0.7rem;
     color: rgba($dark-teal, 0.7);
-    
+
     @media (min-width: 768px) {
       font-size: 0.8rem;
     }
@@ -546,43 +574,43 @@ const toggleAudio = () => {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  
+
   @media (min-width: 768px) {
     gap: 1rem;
   }
-  
-  > div {
+
+  >div {
     margin-bottom: 0;
   }
-  
+
   h3 {
     @include accent-font(600);
     font-size: 0.9rem;
     color: $dark-teal;
     margin-bottom: 0.2rem;
-    
+
     @media (min-width: 768px) {
       font-size: 1rem;
       margin-bottom: 0.3rem;
     }
   }
-  
+
   p {
     @include body-font(400);
     font-size: 0.75rem;
     color: rgba($dark-teal, 0.8);
     margin: 0.05rem 0;
-    
+
     @media (min-width: 768px) {
       font-size: 0.85rem;
       margin: 0.1rem 0;
     }
-    
+
     &.time {
       @include interface-font(600);
       color: $warm-brown;
       font-size: 0.8rem;
-      
+
       @media (min-width: 768px) {
         font-size: 0.9rem;
       }
@@ -592,14 +620,14 @@ const toggleAudio = () => {
 
 .blessing-text {
   margin: 0.3rem 0;
-  
+
   p {
     @include accent-font(400);
     font-size: 0.7rem;
     color: rgba($dark-teal, 0.7);
     font-style: italic;
     line-height: 1.2;
-    
+
     @media (min-width: 768px) {
       font-size: 0.8rem;
       line-height: 1.3;
@@ -628,12 +656,12 @@ const toggleAudio = () => {
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1.2rem;
-  
+
   &:hover {
     transform: scale(1.1);
     box-shadow: 0 5px 15px rgba($dusty-rose, 0.3);
   }
-  
+
   &.playing {
     border-color: $warm-brown;
     background: rgba($warm-brown, 0.1);
@@ -642,8 +670,15 @@ const toggleAudio = () => {
 }
 
 @keyframes musicPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 // Responsive adjustments
@@ -651,31 +686,32 @@ const toggleAudio = () => {
   .invitation-container {
     padding: 0.5rem;
   }
-  
+
   .envelope-wrapper {
     max-width: 340px;
   }
-  
+
   .envelope {
     height: 250px;
   }
-  
+
   .letter {
-    height: 450px;
+    height: 60vh;
+    max-height: 400px;
   }
-  
+
   .letter-content {
     padding: 1.5rem 1rem;
   }
-  
+
   .couple-names-full {
     font-size: 1.6rem;
   }
-  
+
   .guest-name {
     font-size: 1.1rem;
   }
-  
+
   .tap-hint {
     bottom: -40px;
     font-size: 0.8rem;
