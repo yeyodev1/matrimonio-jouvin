@@ -48,28 +48,37 @@ const toggleAudio = () => {
       <source src="/src/assets/song/voy-a-quererte.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Card Container -->
-    <div class="card-wrapper">
+    <!-- Envelope Container -->
+    <div class="envelope-wrapper">
       <div 
-        class="wedding-card" 
-        :class="{ 'card-open': isCardOpen }"
+        class="envelope" 
+        :class="{ 'envelope-opened': isCardOpen }"
         @click="openCard"
       >
-        <!-- Card Front (Closed State) -->
-        <div class="card-front">
-          <div class="card-content">
-            <div class="floral-decoration top"></div>
-            <h1 class="couple-names">Génesis & Christopher</h1>
-            <p class="invitation-text">Te invitamos a celebrar nuestro amor</p>
-            <div class="date-preview">1 de Noviembre, 2025</div>
-            <div class="tap-hint">Toca para abrir</div>
-            <div class="floral-decoration bottom"></div>
+        <!-- Envelope Back -->
+        <div class="envelope-back"></div>
+        
+        <!-- Envelope Flap -->
+        <div class="envelope-flap">
+          <div class="flap-seal">
+            <div class="seal-decoration"></div>
           </div>
         </div>
-
-        <!-- Card Back (Open State) -->
-        <div class="card-back">
-          <div class="card-content">
+        
+        <!-- Envelope Front -->
+        <div class="envelope-front">
+          <div class="envelope-address">
+            <p class="to-label">Para:</p>
+            <p class="guest-name">Nuestros queridos invitados</p>
+            <div class="envelope-decoration">
+              <div class="heart-seal">♥</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Letter/Card Inside -->
+        <div class="letter" :class="{ 'letter-visible': isCardOpen }">
+          <div class="letter-content">
             <div class="floral-decoration top"></div>
             
             <h1 class="couple-names-full">Génesis y Christopher</h1>
@@ -109,10 +118,13 @@ const toggleAudio = () => {
             <div class="floral-decoration bottom"></div>
           </div>
         </div>
+        
+        <!-- Tap hint (only visible when closed) -->
+        <div v-if="!isCardOpen" class="tap-hint">Toca para abrir el sobre</div>
       </div>
     </div>
 
-    <!-- Audio Controls (appears after card opens) -->
+    <!-- Audio Controls (appears after envelope opens) -->
     <div v-if="isCardOpen" class="audio-controls">
       <button 
         @click="toggleAudio" 
@@ -154,66 +166,139 @@ const toggleAudio = () => {
   }
 }
 
-.card-wrapper {
-  perspective: 1000px;
+.envelope-wrapper {
+  perspective: 1200px;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   
   @media (min-width: 768px) {
-    max-width: 500px;
+    max-width: 450px;
   }
 }
 
-.wedding-card {
+.envelope {
   position: relative;
   width: 100%;
-  height: 600px;
+  height: 280px;
   transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   
   @media (min-width: 768px) {
-    height: 700px;
+    height: 320px;
+  }
+  
+  @media (min-width: 1024px) {
+    height: 350px;
   }
 
-  &.card-open {
-    transform: rotateY(180deg);
+  &.envelope-opened {
+    transform: scale(1.1) translateY(-10px);
     cursor: default;
+    
+    .envelope-flap {
+      transform: rotateX(-180deg);
+    }
+    
+    .envelope-front {
+      transform: translateY(100%) rotateX(-15deg);
+      opacity: 0.3;
+    }
+    
+    .letter {
+      transform: translateY(-50px) scale(1.05);
+      opacity: 1;
+      z-index: 10;
+    }
   }
 
-  &:hover:not(.card-open) {
-    transform: translateY(-5px) scale(1.02);
+  &:hover:not(.envelope-opened) {
+    transform: translateY(-8px) scale(1.03);
     
-    .card-front {
-      box-shadow: 0 20px 40px rgba($dark-teal, 0.15);
+    .envelope-front {
+      box-shadow: 0 25px 50px rgba($dark-teal, 0.2);
+    }
+    
+    .envelope-flap {
+      transform: rotateX(-10deg);
     }
   }
 }
 
-.card-front,
-.card-back {
+.envelope-back {
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba($dark-teal, 0.1);
-  overflow: hidden;
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, lighten($cream-white, 2%) 0%, $cream-white 100%);
+  border-radius: 8px;
+  box-shadow: 0 15px 35px rgba($dark-teal, 0.15);
+  border: 1px solid rgba($dusty-rose, 0.3);
 }
 
-.card-front {
+.envelope-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(135deg, $cream-white 0%, lighten($cream-white, 1%) 100%);
-  border: 2px solid rgba($dusty-rose, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 15px 35px rgba($dark-teal, 0.12);
+  border: 1px solid rgba($dusty-rose, 0.25);
+  z-index: 2;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: bottom;
 }
 
-.card-back {
-  background: linear-gradient(135deg, $cream-white 0%, lighten($cream-white, 1%) 100%);
-  border: 2px solid rgba($dark-teal, 0.2);
-  transform: rotateY(180deg);
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(135deg, darken($cream-white, 3%) 0%, darken($cream-white, 1%) 100%);
+  transform-origin: bottom;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid rgba($dusty-rose, 0.3);
+  
+  // Flap triangle shape
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
-.card-content {
+.flap-seal {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, $dusty-rose 0%, darken($dusty-rose, 10%) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba($dusty-rose, 0.4);
+}
+
+.seal-decoration {
+  width: 20px;
+  height: 20px;
+  background: $cream-white;
+  border-radius: 50%;
+  position: relative;
+  
+  &::before {
+    content: '♥';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: $dusty-rose;
+    font-size: 12px;
+  }
+}
+
+.envelope-address {
   padding: 2rem 1.5rem;
   height: 100%;
   display: flex;
@@ -222,9 +307,90 @@ const toggleAudio = () => {
   align-items: center;
   text-align: center;
   position: relative;
+}
+
+.to-label {
+  @include interface-font(400);
+  font-size: 0.9rem;
+  color: rgba($dark-teal, 0.6);
+  margin: 0 0 0.5rem 0;
   
   @media (min-width: 768px) {
-    padding: 3rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+.guest-name {
+  @include accent-font(600);
+  font-size: 1.3rem;
+  color: $dark-teal;
+  margin: 0 0 1.5rem 0;
+  
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.envelope-decoration {
+  margin-top: auto;
+}
+
+.heart-seal {
+  font-size: 2rem;
+  color: $dusty-rose;
+  animation: heartbeat 2s infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.letter {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  width: 96%;
+  height: 800px;
+  background: linear-gradient(135deg, $cream-white 0%, lighten($cream-white, 2%) 100%);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba($dark-teal, 0.2);
+  border: 2px solid rgba($dark-teal, 0.1);
+  transform: translateY(20px) scale(0.85);
+  opacity: 0;
+  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
+  z-index: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  @media (min-width: 768px) {
+    height: 850px;
+    left: 3%;
+    width: 94%;
+    top: 1%;
+  }
+  
+  &.letter-visible {
+    transform: translateY(-80px) scale(1.15);
+    opacity: 1;
+    z-index: 10;
+  }
+}
+
+.letter-content {
+  padding: 1.2rem 1rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  gap: 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 1.8rem 1.5rem;
+    gap: 1.2rem;
   }
 }
 
@@ -289,161 +455,138 @@ const toggleAudio = () => {
   }
 }
 
-// Front card styles
-.couple-names {
-  @include heading-font(700);
-  font-size: 2.5rem;
-  color: $dark-teal;
-  margin: 1rem 0;
-  letter-spacing: -0.02em;
-  
-  @media (min-width: 768px) {
-    font-size: 3rem;
-  }
-}
-
-.invitation-text {
-  @include accent-font(400);
-  font-size: 1.1rem;
-  color: $warm-brown;
-  margin: 1rem 0;
-  font-style: italic;
-  
-  @media (min-width: 768px) {
-    font-size: 1.3rem;
-  }
-}
-
-.date-preview {
-  @include body-font(500);
-  font-size: 1rem;
-  color: $dark-teal;
-  margin: 1.5rem 0;
-  padding: 0.8rem 1.5rem;
-  background: rgba($dusty-rose, 0.1);
-  border-radius: 25px;
-  border: 1px solid rgba($dusty-rose, 0.2);
-  
-  @media (min-width: 768px) {
-    font-size: 1.1rem;
-  }
-}
-
+// Tap hint for envelope
 .tap-hint {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
   @include interface-font(400);
-  font-size: 0.9rem;
-  color: rgba($dark-teal, 0.6);
-  margin-top: auto;
-  padding: 0.5rem 1rem;
-  background: rgba($warm-brown, 0.1);
-  border-radius: 15px;
-  animation: pulse 2s infinite;
+  font-size: 0.85rem;
+  color: rgba($dark-teal, 0.7);
+  padding: 0.6rem 1.2rem;
+  background: rgba($cream-white, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba($dusty-rose, 0.3);
+  animation: pulse 2.5s infinite;
+  box-shadow: 0 5px 15px rgba($dark-teal, 0.1);
   
   @media (min-width: 768px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    bottom: -60px;
   }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
 }
 
-// Back card styles
+// Letter content styles
 .couple-names-full {
   @include heading-font(600);
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: $dark-teal;
-  margin-bottom: 1.5rem;
+  margin: 0.3rem 0 0.8rem 0;
   
   @media (min-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
+    margin: 0.5rem 0 1rem 0;
   }
 }
 
 .bible-verse {
-  margin: 1.5rem 0;
+  margin: 0.5rem 0;
   
   .verse-text {
     @include special-font(400);
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     color: $warm-brown;
-    line-height: 1.6;
-    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
     
     @media (min-width: 768px) {
-      font-size: 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 0.3rem;
     }
   }
   
   .verse-reference {
     @include interface-font(500);
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: rgba($dark-teal, 0.7);
     
     @media (min-width: 768px) {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
   }
 }
 
 .wedding-details {
-  margin: 2rem 0;
+  margin: 0.5rem 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  
+  @media (min-width: 768px) {
+    gap: 1rem;
+  }
   
   > div {
-    margin-bottom: 1.5rem;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin-bottom: 0;
   }
   
   h3 {
     @include accent-font(600);
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: $dark-teal;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
     
     @media (min-width: 768px) {
-      font-size: 1.2rem;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
     }
   }
   
   p {
     @include body-font(400);
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: rgba($dark-teal, 0.8);
-    margin: 0.2rem 0;
+    margin: 0.05rem 0;
     
     @media (min-width: 768px) {
-      font-size: 1rem;
+      font-size: 0.85rem;
+      margin: 0.1rem 0;
     }
     
     &.time {
       @include interface-font(600);
       color: $warm-brown;
-      font-size: 1rem;
+      font-size: 0.8rem;
       
       @media (min-width: 768px) {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
       }
     }
   }
 }
 
 .blessing-text {
-  margin-top: auto;
+  margin: 0.3rem 0;
   
   p {
     @include accent-font(400);
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: rgba($dark-teal, 0.7);
     font-style: italic;
-    line-height: 1.5;
+    line-height: 1.2;
     
     @media (min-width: 768px) {
-      font-size: 0.95rem;
+      font-size: 0.8rem;
+      line-height: 1.3;
     }
   }
 }
@@ -493,20 +636,33 @@ const toggleAudio = () => {
     padding: 0.5rem;
   }
   
-  .wedding-card {
-    height: 550px;
+  .envelope-wrapper {
+    max-width: 340px;
   }
   
-  .card-content {
+  .envelope {
+    height: 250px;
+  }
+  
+  .letter {
+    height: 450px;
+  }
+  
+  .letter-content {
     padding: 1.5rem 1rem;
   }
   
-  .couple-names {
-    font-size: 2rem;
+  .couple-names-full {
+    font-size: 1.6rem;
   }
   
-  .couple-names-full {
-    font-size: 1.8rem;
+  .guest-name {
+    font-size: 1.1rem;
+  }
+  
+  .tap-hint {
+    bottom: -40px;
+    font-size: 0.8rem;
   }
 }
 </style>
