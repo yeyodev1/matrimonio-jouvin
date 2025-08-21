@@ -10,8 +10,6 @@ const openCard = async () => {
     isCardOpen.value = true
     
     // Reproducir música después de un pequeño delay para la animación
-    // Descomentar cuando se agregue el archivo de audio
-    /*
     setTimeout(async () => {
       if (audioRef.value) {
         try {
@@ -22,13 +20,10 @@ const openCard = async () => {
         }
       }
     }, 500)
-    */
   }
 }
 
 const toggleAudio = () => {
-  // Descomentar cuando se agregue el archivo de audio
-  /*
   if (audioRef.value) {
     if (isAudioPlaying.value) {
       audioRef.value.pause()
@@ -38,22 +33,20 @@ const toggleAudio = () => {
       isAudioPlaying.value = true
     }
   }
-  */
 }
 </script>
 
 <template>
   <main class="invitation-container">
-    <!-- Audio element (hidden) - Agregar archivos de audio en /public/audio/ -->
-    <!-- <audio 
+    <!-- Audio element (hidden) -->
+    <audio 
       ref="audioRef" 
       loop 
       preload="auto"
       @ended="isAudioPlaying = false"
     >
-      <source src="/audio/wedding-song.mp3" type="audio/mpeg">
-      <source src="/audio/wedding-song.ogg" type="audio/ogg">
-    </audio> -->
+      <source src="/src/assets/song/voy-a-quererte.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- Card Container -->
     <div class="card-wrapper">
@@ -126,8 +119,8 @@ const toggleAudio = () => {
         class="audio-toggle"
         :class="{ 'playing': isAudioPlaying }"
       >
-        <span v-if="isAudioPlaying">🎵</span>
-        <span v-else>🔇</span>
+        <i v-if="isAudioPlaying" class="fas fa-pause"></i>
+        <i v-else class="fas fa-play"></i>
       </button>
     </div>
   </main>
