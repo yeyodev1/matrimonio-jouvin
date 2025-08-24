@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useInvitationStore } from '@/stores/invitationStore'
+import type { CreateInvitationRequest } from '@/services/invitationService'
 
 interface InvitationData {
   guestName: string
@@ -10,6 +12,7 @@ interface InvitationData {
 }
 
 const router = useRouter()
+const invitationStore = useInvitationStore()
 
 const form = reactive<InvitationData>({
   guestName: '',
@@ -22,6 +25,8 @@ const isGenerating = ref(false)
 const generatedInvitation = ref<string>('')
 const showPreview = ref(false)
 const errors = ref<Record<string, string>>({})
+const showSuccessMessage = ref(false)
+const createdInvitation = ref<any>(null)
 
 const invitationTypes = [
   { value: 'family', label: 'Familia', icon: 'fas fa-home', description: 'Tono cálido y familiar' },
@@ -43,24 +48,46 @@ const validateForm = (): boolean => {
   return Object.keys(errors.value).length === 0
 }
 
-const generateInvitationUrl = () => {
+const generateInvitationUrl = async () => {
   if (!validateForm()) return
 
   isGenerating.value = true
+  showSuccessMessage.value = false
 
-  // Simular generación de invitación
-  setTimeout(() => {
-    const params = new URLSearchParams({
-      guest: form.guestName,
-      guests: form.numberOfGuests.toString(),
-      type: form.invitationType,
-      message: form.personalMessage || ''
-    })
+  try {
+    // Crear la invitación en el backend
+    const invitationData: CreateInvitationRequest = {
+      guestName: form.guestName.trim(),
+      numberOfCompanions: form.numberOfGuests - 1 // Restar 1 porque numberOfGuests incluye al invitado principal
+    }
 
-    generatedInvitation.value = `${window.location.origin}/invitation?${params.toString()}`
-    showPreview.value = true
+    const newInvitation = await invitationStore.createInvitation(invitationData)
+
+    if (newInvitation) {
+      createdInvitation.value = newInvitation
+
+      // Generar URL con el ID de la invitación creada y datos adicionales del formulario
+      const params = new URLSearchParams({
+        id: newInvitation._id,
+        guest: form.guestName,
+        guests: form.numberOfGuests.toString(),
+        type: form.invitationType,
+        message: form.personalMessage || ''
+      })
+
+      generatedInvitation.value = `${window.location.origin}/invitation?${params.toString()}`
+      showPreview.value = true
+      showSuccessMessage.value = true
+    } else {
+      // Manejar error de creación
+      errors.value.general = 'Error al crear la invitación. Por favor, intenta nuevamente.'
+    }
+  } catch (error) {
+    console.error('Error creating invitation:', error)
+    errors.value.general = 'Error al crear la invitación. Por favor, intenta nuevamente.'
+  } finally {
     isGenerating.value = false
-  }, 1500)
+  }
 }
 
 const copyToClipboard = async () => {
@@ -88,6 +115,11 @@ const resetForm = () => {
   errors.value = {}
   showPreview.value = false
   generatedInvitation.value = ''
+  showSuccessMessage.value = false
+  createdInvitation.value = null
+
+  // Limpiar errores del store
+  invitationStore.clearError('create')
 }
 
 const previewInvitation = () => {
@@ -102,6 +134,30 @@ const guestText = computed(() => {
   }
   return 'invitados'
 })
+
+// Computed para mostrar errores del store
+const storeError = computed(() => {
+  return invitationStore.errors.create
+})
+
+// Computed para mostrar estado de loading del store
+const isCreating = computed(() => {
+  return invitationStore.loading.creating
+})
+
+// Computed para mostrar estadísticas
+const invitationStats = computed(() => {
+  return invitationStore.getInvitationStats
+})
+
+// Cargar invitaciones existentes al montar el componente
+onMounted(async () => {
+  try {
+    await invitationStore.fetchInvitations({ page: 1, limit: 100 })
+  } catch (error) {
+    console.error('Error loading invitations:', error)
+  }
+})
 </script>
 
 <template>
@@ -110,6 +166,31 @@ const guestText = computed(() => {
       <i class="fas fa-magic header-icon"></i>
       <h1 class="main-title">Crear Invitación Personalizada</h1>
       <p class="subtitle">Genera invitaciones únicas para cada uno de tus invitados</p>
+      
+      <!-- Estadísticas de invitaciones -->
+      <div v-if="invitationStats.totalInvitations > 0" class="stats-container">
+        <div class="stat-item">
+          <i class="fas fa-envelope"></i>
+          <div class="stat-content">
+            <span class="stat-number">{{ invitationStats.totalInvitations }}</span>
+            <span class="stat-label">Invitaciones</span>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-users"></i>
+          <div class="stat-content">
+            <span class="stat-number">{{ invitationStats.totalGuests }}</span>
+            <span class="stat-label">Invitados</span>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-chart-line"></i>
+          <div class="stat-content">
+            <span class="stat-number">{{ invitationStats.averageCompanions.toFixed(1) }}</span>
+            <span class="stat-label">Promedio acompañantes</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-if="!showPreview" class="form-container">
@@ -216,15 +297,21 @@ const guestText = computed(() => {
           <small class="help-text">{{ form.personalMessage.length }}/200 caracteres</small>
         </div>
 
+        <!-- Mensaje de error general -->
+        <div v-if="errors.general || storeError" class="error-container">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>{{ errors.general || storeError }}</span>
+        </div>
+
         <!-- Botón generar -->
         <button
           type="submit"
           class="generate-button"
-          :disabled="isGenerating"
+          :disabled="isGenerating || isCreating"
         >
-          <i v-if="isGenerating" class="fas fa-spinner fa-spin"></i>
+          <i v-if="isGenerating || isCreating" class="fas fa-spinner fa-spin"></i>
           <i v-else class="fas fa-magic"></i>
-          {{ isGenerating ? 'Generando invitación...' : 'Generar Invitación' }}
+          {{ (isGenerating || isCreating) ? 'Creando invitación...' : 'Crear Invitación' }}
         </button>
       </form>
     </div>
@@ -233,8 +320,11 @@ const guestText = computed(() => {
     <div v-else class="preview-container">
       <div class="preview-header">
         <i class="fas fa-check-circle success-icon"></i>
-        <h2 class="preview-title">¡Invitación Generada Exitosamente!</h2>
-        <p class="preview-subtitle">Tu invitación personalizada está lista para compartir</p>
+        <h2 class="preview-title">¡Invitación Creada Exitosamente!</h2>
+        <p class="preview-subtitle">Tu invitación ha sido guardada y está lista para compartir</p>
+        <div v-if="createdInvitation" class="invitation-id">
+          <small><strong>ID:</strong> {{ createdInvitation._id }}</small>
+        </div>
       </div>
 
       <div class="invitation-preview">
@@ -248,8 +338,20 @@ const guestText = computed(() => {
             <span><strong>Número de {{ guestText }}:</strong> {{ form.numberOfGuests }}</span>
           </div>
           <div class="detail-item">
+            <i class="fas fa-users-cog"></i>
+            <span><strong>Acompañantes:</strong> {{ form.numberOfGuests - 1 }}</span>
+          </div>
+          <div class="detail-item">
             <i class="fas fa-tag"></i>
             <span><strong>Tipo:</strong> {{invitationTypes.find(t => t.value === form.invitationType)?.label}}</span>
+          </div>
+          <div v-if="form.personalMessage" class="detail-item">
+            <i class="fas fa-heart"></i>
+            <span><strong>Mensaje:</strong> {{ form.personalMessage }}</span>
+          </div>
+          <div v-if="createdInvitation" class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span><strong>Creada:</strong> {{ new Date(createdInvitation.createdAt).toLocaleString('es-ES') }}</span>
           </div>
         </div>
 
@@ -302,12 +404,11 @@ const guestText = computed(() => {
 
 <style lang="scss" scoped>
 @use 'sass:color';
-@import '@/styles/fonts.modules.scss';
-@import '@/styles/colorVariables.module.scss';
+@use '@/styles/colorVariables.module.scss' as *;
+@use '@/styles/fonts.modules.scss' as *;
 
 .create-invitation-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, $background-color 0%, lighten($background-color, 3%) 100%);
   padding: 2rem 1rem;
   position: relative;
   overflow-x: hidden;
@@ -341,6 +442,62 @@ const guestText = computed(() => {
     color: $charcoal;
     max-width: 600px;
     margin: 0 auto;
+  }
+
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 2rem auto 0;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    i {
+      font-size: 2rem;
+      color: $secondary-color;
+      width: 40px;
+      text-align: center;
+    }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stat-number {
+      @include heading-font(700);
+      font-size: 1.8rem;
+      color: $primary-color;
+      line-height: 1;
+    }
+
+    .stat-label {
+      @include body-font(500);
+      font-size: 0.875rem;
+      color: $charcoal;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
   }
 }
 
@@ -558,6 +715,23 @@ const guestText = computed(() => {
   display: block;
 }
 
+.error-container {
+  @include body-font(500);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 12px;
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+
+  i {
+    font-size: 1.2rem;
+  }
+}
+
 .generate-button {
   @include body-font(600);
   width: 100%;
@@ -616,6 +790,19 @@ const guestText = computed(() => {
       @include body-font(400);
       font-size: 1.1rem;
       color: $charcoal;
+    }
+
+    .invitation-id {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(68, 93, 87, 0.1);
+      border-radius: 8px;
+
+      small {
+        @include body-font(400);
+        color: $primary-color;
+        font-size: 0.875rem;
+      }
     }
   }
 }
