@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useInvitationStore } from '@/stores/invitationStore'
 import type { IInvitation } from '@/services/invitationService'
 
 // Props
@@ -22,6 +23,17 @@ const props = defineProps({
   }
 })
 
+// Store
+const invitationStore = useInvitationStore()
+
+// Estado local
+const isConfirming = ref(false)
+
+// Computed para verificar si ya está confirmado
+const isConfirmed = computed(() => {
+  return props.invitationData?.confirmed || false
+})
+
 // Computed para generar mensaje personalizado
 const personalizedMessage = computed(() => {
   const baseMessage = `¡Hola! Soy ${props.guestName} y confirmo mi asistencia a la boda de Génesis y Christopher el 1 de Noviembre de 2025.`
@@ -34,10 +46,32 @@ const personalizedMessage = computed(() => {
   return baseMessage
 })
 
+// Función para confirmar asistencia
+const confirmAttendance = async () => {
+  if (isConfirming.value) return
+  
+  isConfirming.value = true
+  try {
+    await invitationStore.confirmInvitation(props.invitationId, true)
+  } catch (error) {
+    console.error('Error al confirmar asistencia:', error)
+  } finally {
+    isConfirming.value = false
+  }
+}
+
 // Función para abrir WhatsApp
 const openWhatsApp = () => {
-  const phoneNumber = '+1234567890' // Reemplazar con el número real
+  const phoneNumber = '+573008765432' // Número de WhatsApp para contacto
   const message = encodeURIComponent(personalizedMessage.value)
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`
+  window.open(whatsappUrl, '_blank')
+}
+
+// Función para contactar por WhatsApp si hay problemas
+const contactSupport = () => {
+  const phoneNumber = '+573008765432' // Número de WhatsApp para soporte
+  const message = encodeURIComponent(`Hola, soy ${props.guestName} y tengo un problema con mi confirmación de asistencia a la boda.`)
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`
   window.open(whatsappUrl, '_blank')
 }
@@ -89,12 +123,44 @@ const openWhatsApp = () => {
         <i class="fab fa-whatsapp"></i>
       </div>
       
-      <h3 class="rsvp-title">CONFIRMAR ASISTENCIA</h3>
+      <!-- Estado: No confirmado -->
+      <div v-if="!isConfirmed" class="confirmation-pending">
+        <h3 class="rsvp-title">CONFIRMAR ASISTENCIA</h3>
+        
+        <button 
+          @click="confirmAttendance" 
+          :disabled="isConfirming || invitationStore.loading.confirming"
+          class="confirm-button"
+        >
+          <i v-if="isConfirming || invitationStore.loading.confirming" class="fas fa-spinner fa-spin"></i>
+          <i v-else class="fab fa-whatsapp"></i>
+          {{ isConfirming || invitationStore.loading.confirming ? 'Confirmando...' : 'Confirmar Asistencia' }}
+        </button>
+      </div>
       
-      <button @click="openWhatsApp" class="confirm-button">
-        <i class="fab fa-whatsapp"></i>
-        Confirmar aquí
-      </button>
+      <!-- Estado: Ya confirmado -->
+      <div v-else class="confirmation-confirmed">
+        <div class="confirmed-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <h3 class="confirmed-title">¡ASISTENCIA CONFIRMADA!</h3>
+        
+        <p class="confirmed-message">
+          Tu asistencia ha sido confirmada exitosamente.
+        </p>
+        
+        <div class="support-section">
+          <p class="support-text">
+            Si tienes algún problema o necesitas hacer cambios,
+          </p>
+          
+          <button @click="contactSupport" class="support-button">
+            <i class="fab fa-whatsapp"></i>
+            Escríbenos aquí
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Mensaje Final -->
@@ -115,6 +181,9 @@ const openWhatsApp = () => {
 </template>
 
 <style lang="scss" scoped>
+@import '@/styles/colorVariables.module.scss';
+@import '@/styles/fonts.modules.scss';
+
 .wedding-rsvp {
   width: 100%;
   max-width: 600px;
@@ -365,6 +434,141 @@ const openWhatsApp = () => {
   }
 }
 
+// Estados de confirmación
+.confirmation-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.confirmation-confirmed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, rgba($sage-green, 0.1) 0%, rgba($cream-white, 0.8) 100%);
+  border-radius: 12px;
+  border: 2px solid rgba($sage-green, 0.3);
+  box-shadow: 0 8px 25px rgba($sage-green, 0.15);
+
+  @media (min-width: 768px) {
+    padding: 2.5rem 2rem;
+  }
+}
+
+.confirmed-icon {
+  font-size: 3rem;
+  color: $sage-green;
+  animation: confirmPulse 2s infinite;
+
+  @media (min-width: 768px) {
+    font-size: 3.5rem;
+  }
+}
+
+.confirmed-title {
+  @include heading-font(600);
+  font-size: 1.5rem;
+  color: $dark-teal;
+  margin: 0;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 1.8rem;
+  }
+}
+
+.confirmed-message {
+  @include body-font(400);
+  font-size: 1rem;
+  color: rgba($charcoal, 0.8);
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+
+  @media (min-width: 768px) {
+    font-size: 1.1rem;
+  }
+}
+
+.support-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba($dusty-rose, 0.2);
+}
+
+.support-text {
+  @include interface-font(400);
+  font-size: 0.9rem;
+  color: rgba($charcoal, 0.7);
+  margin: 0;
+  text-align: center;
+  line-height: 1.4;
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
+}
+
+.support-button {
+  @include interface-font(500);
+  background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 0.8rem 1.8rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #0f7a6b 0%, #20c157 100%);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.confirm-button {
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+    
+    &:hover {
+      transform: none !important;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+  }
+}
+
 // Sección Mensaje Final
 .final-message-section {
   position: relative;
@@ -438,7 +642,7 @@ const openWhatsApp = () => {
   }
 }
 
-// Animaciones
+/* Animaciones */
 @keyframes heartbeat {
   0%, 100% {
     transform: scale(1);
@@ -469,7 +673,18 @@ const openWhatsApp = () => {
   }
 }
 
-// Animación de entrada
+@keyframes confirmPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Animación de entrada */
 .no-children-section,
 .rsvp-section,
 .final-message-section {
@@ -493,7 +708,7 @@ const openWhatsApp = () => {
   }
 }
 
-// Responsive adjustments
+/* Responsive adjustments */
 @media (max-width: 480px) {
   .wedding-rsvp {
     margin: 1rem;
