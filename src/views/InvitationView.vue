@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useInvitationStore } from '@/stores/invitationStore'
+import { decodeGuestNameFromUrl, generateInvitationUrl as createInvitationUrl } from '@/utils/invitationUrls'
 import CountdownMusicPlayer from '@/components/CountdownMusicPlayer.vue'
 import WeddingSchedule from '@/components/WeddingSchedule.vue'
 import DressCodeGifts from '@/components/DressCodeGifts.vue'
@@ -17,18 +18,41 @@ const audioRef = ref<HTMLAudioElement | null>(null)
 const isAudioPlaying = ref(false)
 const isLoadingInvitation = ref(false)
 
-// Obtener parámetros de la URL
-const guestName = computed(() => route.query.guest as string || '')
+// Obtener parámetros de la URL (tanto de ruta como query)
+const routeGuestName = computed(() => route.params.guestName as string || '')
+const queryGuestName = computed(() => route.query.guest as string || '')
 const companionsCount = computed(() => parseInt(route.query.companions as string) || 0)
 const invitationId = computed(() => route.query.id as string || '')
 
 // Datos de la invitación
 const invitationData = computed(() => invitationStore.currentInvitation)
+
+// Nombre del invitado con prioridad: 1) Datos de API, 2) Parámetro de ruta, 3) Query parameter, 4) Fallback
 const displayGuestName = computed(() => {
   if (invitationData.value?.guestName) {
     return invitationData.value.guestName
   }
-  return guestName.value || 'Nuestros queridos invitados'
+  if (routeGuestName.value) {
+    // Usar la función de utilidades para decodificar el nombre
+    return decodeGuestNameFromUrl(routeGuestName.value)
+  }
+  return queryGuestName.value || 'Nuestros queridos invitados'
+})
+
+// Nombre del invitado para usar en componentes hijos (mantiene compatibilidad)
+const guestName = computed(() => routeGuestName.value || queryGuestName.value || '')
+
+// Función para obtener la URL completa de la invitación actual
+const getCurrentInvitationUrl = computed(() => {
+  const currentGuestName = displayGuestName.value
+  if (currentGuestName && currentGuestName !== 'Nuestros queridos invitados') {
+    return createInvitationUrl({
+      guestName: currentGuestName,
+      companions: companionsCount.value || undefined,
+      invitationId: invitationId.value || undefined
+    })
+  }
+  return route.fullPath
 })
 
 // Cargar datos de la invitación
