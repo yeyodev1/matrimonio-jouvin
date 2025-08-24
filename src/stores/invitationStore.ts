@@ -5,6 +5,7 @@ import type {
   IInvitation,
   CreateInvitationRequest,
   UpdateInvitationRequest,
+  ConfirmInvitationRequest,
   PaginationParams
 } from '@/services/invitationService'
 
@@ -25,6 +26,7 @@ interface LoadingState {
   updating: boolean
   deleting: boolean
   fetchingById: boolean
+  confirming: boolean
 }
 
 // Interface para el estado de errores
@@ -34,6 +36,7 @@ interface ErrorState {
   update: string | null
   delete: string | null
   fetchById: string | null
+  confirm: string | null
 }
 
 export const useInvitationStore = defineStore('invitation', () => {
@@ -54,7 +57,8 @@ export const useInvitationStore = defineStore('invitation', () => {
     fetching: false,
     updating: false,
     deleting: false,
-    fetchingById: false
+    fetchingById: false,
+    confirming: false
   })
   
   const errors = ref<ErrorState>({
@@ -62,7 +66,8 @@ export const useInvitationStore = defineStore('invitation', () => {
     fetch: null,
     update: null,
     delete: null,
-    fetchById: null
+    fetchById: null,
+    confirm: null
   })
 
   // Computed properties
@@ -250,6 +255,41 @@ export const useInvitationStore = defineStore('invitation', () => {
   }
 
   /**
+   * Confirmar o desconfirmar una invitación
+   */
+  const confirmInvitation = async (id: string, confirmed: boolean): Promise<IInvitation | null> => {
+    loading.value.confirming = true
+    clearError('confirm')
+    
+    try {
+      const response = await invitationService.confirmInvitation(id, { confirmed })
+      const confirmedInvitation = response.data.invitation
+      
+      if (confirmedInvitation) {
+        // Actualizar en la lista de invitaciones
+        const index = invitations.value.findIndex(inv => inv._id === id)
+        if (index !== -1) {
+          invitations.value[index] = confirmedInvitation
+        }
+        
+        // Actualizar la invitación actual si es la misma
+        if (currentInvitation.value?._id === id) {
+          currentInvitation.value = confirmedInvitation
+        }
+        
+        return confirmedInvitation
+      }
+      
+      return null
+    } catch (error) {
+      handleError('confirm', error)
+      return null
+    } finally {
+      loading.value.confirming = false
+    }
+  }
+
+  /**
    * Cargar más invitaciones (paginación infinita)
    */
   const loadMoreInvitations = async (): Promise<void> => {
@@ -356,6 +396,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     fetchInvitationById,
     updateInvitation,
     deleteInvitation,
+    confirmInvitation,
     loadMoreInvitations,
     refreshInvitations,
     
