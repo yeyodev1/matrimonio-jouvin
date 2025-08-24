@@ -2,6 +2,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInvitationStore } from '@/stores/invitationStore'
+import { generateInvitationUrl as createInvitationUrl } from '@/utils/invitationUrls'
 import type { CreateInvitationRequest } from '@/services/invitationService'
 
 interface InvitationData {
@@ -66,16 +67,14 @@ const generateInvitationUrl = async () => {
     if (newInvitation) {
       createdInvitation.value = newInvitation
 
-      // Generar URL con el ID de la invitación creada y datos adicionales del formulario
-      const params = new URLSearchParams({
-        id: newInvitation._id,
-        guest: form.guestName,
-        guests: form.numberOfGuests.toString(),
-        type: form.invitationType,
-        message: form.personalMessage || ''
+      // Generar URL profesional con el nombre del invitado en la ruta
+      const invitationUrl = createInvitationUrl({
+        guestName: form.guestName.trim(),
+        companions: form.numberOfGuests - 1, // Acompañantes (sin contar al invitado principal)
+        invitationId: newInvitation._id
       })
 
-      generatedInvitation.value = `${window.location.origin}/invitation?${params.toString()}`
+      generatedInvitation.value = `${window.location.origin}${invitationUrl}`
       showPreview.value = true
       showSuccessMessage.value = true
     } else {
