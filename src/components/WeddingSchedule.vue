@@ -320,7 +320,7 @@ const scheduleItems = ref([
   }
 }
 
-// Animaciones
+/* Animaciones */
 .timeline-item {
   opacity: 0;
   transform: translateY(20px);
@@ -349,7 +349,7 @@ const scheduleItems = ref([
   }
 }
 
-// Responsive adjustments
+/* Responsive adjustments */
 @media (max-width: 480px) {
   .wedding-schedule {
     margin: 1rem;
