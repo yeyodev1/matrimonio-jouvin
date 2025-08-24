@@ -163,7 +163,8 @@ const goToCreateInvitation = () => {
 }
 
 const generateInvitationUrl = (invitation: IInvitation) => {
-  return `${window.location.origin}/invitation?guest=${encodeURIComponent(invitation.guestName)}&companions=${invitation.numberOfCompanions}&id=${invitation._id}`
+  const guestNameForUrl = invitation.guestName.toLowerCase().replace(/\s+/g, '-')
+  return `${window.location.origin}/invitation/${guestNameForUrl}?companions=${invitation.numberOfCompanions}&id=${invitation._id}`
 }
 
 const copyInvitationUrl = async (invitation: IInvitation) => {
