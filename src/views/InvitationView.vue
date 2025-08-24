@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import CountdownMusicPlayer from '@/components/CountdownMusicPlayer.vue'
 import WeddingSchedule from '@/components/WeddingSchedule.vue'
+import DressCodeGifts from '@/components/DressCodeGifts.vue'
 
 const isCardOpen = ref(false)
 const audioRef = ref<HTMLAudioElement | null>(null)
@@ -119,6 +120,9 @@ const toggleAudio = () => {
 
             <!-- Cronograma de actividades -->
             <WeddingSchedule />
+
+            <!-- Código de vestimenta y sugerencia de regalos -->
+            <DressCodeGifts />
 
             <div class="floral-decoration bottom"></div>
           </div>
