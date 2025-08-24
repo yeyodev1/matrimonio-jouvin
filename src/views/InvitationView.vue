@@ -125,6 +125,24 @@ const toggleAudio = () => {
       <source src="/src/assets/song/voy-a-quererte.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Welcome Section -->
+    <div v-if="!isCardOpen" class="welcome-section">
+      <div class="welcome-content">
+        <div class="welcome-decoration">
+          <i class="fas fa-heart welcome-heart"></i>
+        </div>
+        <h2 class="welcome-title">¡Hola!</h2>
+        <p class="welcome-guest-name">{{ displayGuestName }}</p>
+        <p v-if="companionsCount > 0" class="welcome-companions">
+          {{ companionsCount === 1 ? 'y tu acompañante' : `y tus ${companionsCount} acompañantes` }}
+        </p>
+        <p class="welcome-message">Tenemos una invitación especial para ti</p>
+        <div class="welcome-arrow">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+    </div>
+
     <!-- Envelope Container -->
     <div class="envelope-wrapper">
       <div 
@@ -240,10 +258,14 @@ const toggleAudio = () => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/colorVariables.module.scss' as *;
+@use '@/styles/fonts.modules.scss' as *;
+
 .invitation-container {
   min-height: 100vh;
   background: linear-gradient(135deg, $cream-white 0%, lighten($cream-white, 2%) 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 1rem;
@@ -783,6 +805,97 @@ const toggleAudio = () => {
 
   50% {
     transform: scale(1.05);
+  }
+}
+
+// Welcome section styles
+.welcome-section {
+  position: relative;
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.welcome-content {
+  max-width: 400px;
+  margin: 0 auto;
+  animation: welcomeFadeIn 1.5s ease-out;
+}
+
+.welcome-decoration {
+  margin-bottom: 1.5rem;
+}
+
+.welcome-heart {
+  font-size: 3rem;
+  color: #d4a574;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.welcome-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 2.5rem;
+  color: #2c5f5d;
+  margin-bottom: 1rem;
+}
+
+.welcome-guest-name {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #d4a574;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.welcome-companions {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #8fbc8f;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.welcome-message {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.welcome-arrow {
+  animation: bounce 2s infinite;
+}
+
+.welcome-arrow i {
+  font-size: 1.5rem;
+  color: #8fbc8f;
+  opacity: 0.7;
+}
+
+@keyframes welcomeFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
   }
 }
 
