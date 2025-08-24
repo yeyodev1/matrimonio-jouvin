@@ -1,13 +1,54 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useInvitationStore } from '@/stores/invitationStore'
 import CountdownMusicPlayer from '@/components/CountdownMusicPlayer.vue'
 import WeddingSchedule from '@/components/WeddingSchedule.vue'
 import DressCodeGifts from '@/components/DressCodeGifts.vue'
 import WeddingRSVP from '@/components/WeddingRSVP.vue'
 
+// Router y Store
+const route = useRoute()
+const invitationStore = useInvitationStore()
+
+// Estados locales
 const isCardOpen = ref(false)
 const audioRef = ref<HTMLAudioElement | null>(null)
 const isAudioPlaying = ref(false)
+const isLoadingInvitation = ref(false)
+
+// Obtener parámetros de la URL
+const guestName = computed(() => route.query.guest as string || '')
+const companionsCount = computed(() => parseInt(route.query.companions as string) || 0)
+const invitationId = computed(() => route.query.id as string || '')
+
+// Datos de la invitación
+const invitationData = computed(() => invitationStore.currentInvitation)
+const displayGuestName = computed(() => {
+  if (invitationData.value?.guestName) {
+    return invitationData.value.guestName
+  }
+  return guestName.value || 'Nuestros queridos invitados'
+})
+
+// Cargar datos de la invitación
+const loadInvitationData = async () => {
+  if (invitationId.value) {
+    isLoadingInvitation.value = true
+    try {
+      await invitationStore.fetchInvitationById(invitationId.value)
+    } catch (error) {
+      console.error('Error al cargar la invitación:', error)
+    } finally {
+      isLoadingInvitation.value = false
+    }
+  }
+}
+
+// Inicializar al montar el componente
+onMounted(() => {
+  loadInvitationData()
+})
 
 const openCard = async () => {
   if (!isCardOpen.value) {
@@ -42,6 +83,14 @@ const toggleAudio = () => {
 
 <template>
   <main class="invitation-container">
+    <!-- Loading indicator -->
+    <div v-if="isLoadingInvitation" class="loading-overlay">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando invitación...</p>
+      </div>
+    </div>
+
     <!-- Audio element (hidden) -->
     <audio 
       ref="audioRef" 
@@ -72,12 +121,15 @@ const toggleAudio = () => {
         <!-- Envelope Front -->
         <div class="envelope-front">
           <div class="envelope-address">
-            <p class="to-label">Para:</p>
-            <p class="guest-name">Nuestros queridos invitados</p>
-            <div class="envelope-decoration">
-              <div class="heart-seal">♥</div>
-            </div>
+          <p class="to-label">Para:</p>
+          <p class="guest-name">{{ displayGuestName }}</p>
+          <p v-if="companionsCount > 0" class="companions-info">
+            {{ companionsCount === 1 ? '+ 1 acompañante' : `+ ${companionsCount} acompañantes` }}
+          </p>
+          <div class="envelope-decoration">
+            <div class="heart-seal">♥</div>
           </div>
+        </div>
         </div>
         
         <!-- Letter/Card Inside -->
@@ -126,7 +178,12 @@ const toggleAudio = () => {
             <DressCodeGifts />
 
             <!-- RSVP y mensaje final -->
-            <WeddingRSVP />
+            <WeddingRSVP 
+              :invitation-data="invitationData"
+              :guest-name="displayGuestName"
+              :companions-count="companionsCount"
+              :invitation-id="invitationId"
+            />
 
             <div class="floral-decoration bottom"></div>
           </div>
@@ -357,10 +414,22 @@ const toggleAudio = () => {
   @include accent-font(600);
   font-size: 1.3rem;
   color: $dark-teal;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 0.5rem 0;
 
   @media (min-width: 768px) {
     font-size: 1.5rem;
+  }
+}
+
+.companions-info {
+  @include interface-font(400);
+  font-size: 0.85rem;
+  color: rgba($dark-teal, 0.7);
+  margin: 0 0 1.5rem 0;
+  font-style: italic;
+
+  @media (min-width: 768px) {
+    font-size: 0.95rem;
   }
 }
 
@@ -691,6 +760,47 @@ const toggleAudio = () => {
   50% {
     transform: scale(1.05);
   }
+}
+
+// Loading overlay styles
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($cream-white, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  text-align: center;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba($dusty-rose, 0.3);
+    border-top: 3px solid $dusty-rose;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  
+  p {
+    @include interface-font(400);
+    font-size: 0.9rem;
+    color: $dark-teal;
+    margin: 0;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 // Responsive adjustments
