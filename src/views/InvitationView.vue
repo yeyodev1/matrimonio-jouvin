@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import CountdownMusicPlayer from '@/components/CountdownMusicPlayer.vue'
+import WeddingSchedule from '@/components/WeddingSchedule.vue'
 
 const isCardOpen = ref(false)
 const audioRef = ref<HTMLAudioElement | null>(null)
@@ -115,6 +116,9 @@ const toggleAudio = () => {
             <div class="blessing-text">
               <p>Con el amor que nos une, la bendición de Dios<br>y el apoyo de nuestros padres</p>
             </div>
+
+            <!-- Cronograma de actividades -->
+            <WeddingSchedule />
 
             <div class="floral-decoration bottom"></div>
           </div>
