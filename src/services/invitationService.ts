@@ -6,6 +6,7 @@ export interface IInvitation {
   _id: string
   guestName: string
   numberOfCompanions: number
+  confirmed: boolean
   createdAt: string
   updatedAt: string
 }
@@ -20,6 +21,11 @@ export interface CreateInvitationRequest {
 export interface UpdateInvitationRequest {
   guestName?: string
   numberOfCompanions?: number
+}
+
+// Interface para confirmar una invitación
+export interface ConfirmInvitationRequest {
+  confirmed: boolean
 }
 
 // Interface para la respuesta de la API
@@ -169,6 +175,28 @@ class InvitationService extends APIBase {
       return response
     } catch (error) {
       console.error('Error deleting invitation:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Confirmar o desconfirmar una invitación
+   * @param id - ID de la invitación
+   * @param confirmData - Datos de confirmación
+   * @returns Promise con la respuesta de la API
+   */
+  async confirmInvitation(
+    id: string,
+    confirmData: ConfirmInvitationRequest
+  ): Promise<AxiosResponse<APIResponse<IInvitation>>> {
+    try {
+      const response = await this.patch<APIResponse<IInvitation>>(
+        `${this.endpoint}/${id}/confirm`,
+        confirmData
+      )
+      return response
+    } catch (error) {
+      console.error('Error confirming invitation:', error)
       throw error
     }
   }
