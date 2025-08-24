@@ -1,5 +1,6 @@
 import InvitationView from '@/views/InvitationView.vue'
 import CreateInvitationView from '@/views/CreateInvitationView.vue'
+import ManageInvitationsView from '@/views/ManageInvitationsView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/create-invitation',
       name: 'create-invitation',
       component: CreateInvitationView,
+    },
+    {
+      path: '/manage-invitations',
+      name: 'manage-invitations',
+      component: ManageInvitationsView,
     },
   ],
 })
