@@ -1,10 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import type { IInvitation } from '@/services/invitationService'
+
+// Props
+const props = defineProps({
+  invitationData: {
+    type: Object as () => IInvitation | null,
+    default: null
+  },
+  guestName: {
+    type: String,
+    required: true
+  },
+  companionsCount: {
+    type: Number,
+    default: 0
+  },
+  invitationId: {
+    type: String,
+    required: true
+  }
+})
+
+// Computed para generar mensaje personalizado
+const personalizedMessage = computed(() => {
+  const baseMessage = `¡Hola! Soy ${props.guestName} y confirmo mi asistencia a la boda de Génesis y Christopher el 1 de Noviembre de 2025.`
+  
+  if (props.companionsCount > 0) {
+    const companionText = props.companionsCount === 1 ? '1 acompañante' : `${props.companionsCount} acompañantes`
+    return `${baseMessage} Asistiré con ${companionText}.`
+  }
+  
+  return baseMessage
+})
 
 // Función para abrir WhatsApp
 const openWhatsApp = () => {
   const phoneNumber = '+1234567890' // Reemplazar con el número real
-  const message = encodeURIComponent('¡Hola! Confirmo mi asistencia a la boda de Génesis y Christopher el 1 de Noviembre de 2025.')
+  const message = encodeURIComponent(personalizedMessage.value)
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`
   window.open(whatsappUrl, '_blank')
 }
@@ -12,6 +45,20 @@ const openWhatsApp = () => {
 
 <template>
   <div class="wedding-rsvp">
+    <!-- Sección Información del Invitado -->
+    <div class="guest-info-section">
+      <div class="guest-details">
+        <h3 class="guest-greeting">Querido/a</h3>
+        <h2 class="guest-name-display">{{ guestName }}</h2>
+        <p v-if="companionsCount > 0" class="companions-display">
+          {{ companionsCount === 1 ? 'y tu acompañante' : `y tus ${companionsCount} acompañantes` }}
+        </p>
+        <div class="invitation-decoration">
+          <div class="heart-divider">♥</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Sección NO NIÑOS -->
     <div class="no-children-section">
       <div class="decorative-leaves decorative-leaves--top">
@@ -80,6 +127,72 @@ const openWhatsApp = () => {
   @media (min-width: 768px) {
     gap: 4rem;
   }
+}
+
+// Sección Información del Invitado
+.guest-info-section {
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, rgba($cream-white, 0.8) 0%, rgba($dusty-rose, 0.05) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba($dusty-rose, 0.2);
+  box-shadow: 0 8px 25px rgba($dark-teal, 0.08);
+
+  @media (min-width: 768px) {
+    padding: 2.5rem 2rem;
+  }
+}
+
+.guest-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.guest-greeting {
+  @include interface-font(400);
+  font-size: 1rem;
+  color: rgba($dark-teal, 0.7);
+  margin: 0;
+  font-style: italic;
+
+  @media (min-width: 768px) {
+    font-size: 1.1rem;
+  }
+}
+
+.guest-name-display {
+  @include heading-font(600);
+  font-size: 1.8rem;
+  color: $dark-teal;
+  margin: 0;
+  text-transform: capitalize;
+
+  @media (min-width: 768px) {
+    font-size: 2.2rem;
+  }
+}
+
+.companions-display {
+  @include accent-font(400);
+  font-size: 0.95rem;
+  color: rgba($warm-brown, 0.8);
+  margin: 0;
+  font-style: italic;
+
+  @media (min-width: 768px) {
+    font-size: 1.05rem;
+  }
+}
+
+.invitation-decoration {
+  margin-top: 1rem;
+}
+
+.heart-divider {
+  font-size: 1.5rem;
+  color: $dusty-rose;
+  animation: heartbeat 2s infinite;
 }
 
 // Sección NO NIÑOS
@@ -326,6 +439,15 @@ const openWhatsApp = () => {
 }
 
 // Animaciones
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
 @keyframes leafFloat {
   0%, 100% {
     transform: translateY(0) rotate(0deg);
