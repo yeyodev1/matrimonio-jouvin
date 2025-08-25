@@ -14,8 +14,9 @@ const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
-const sortBy = ref<'guestName' | 'numberOfCompanions' | 'createdAt'>('createdAt')
+const sortBy = ref<'guestName' | 'numberOfCompanions' | 'createdAt' | 'confirmed'>('createdAt')
 const sortOrder = ref<'asc' | 'desc'>('desc')
+const confirmationFilter = ref<'all' | 'confirmed' | 'pending'>('all')
 
 // Estado para edición
 const editingInvitation = reactive({
@@ -29,25 +30,45 @@ const deletingInvitation = ref<IInvitation | null>(null)
 
 // Computed properties
 const filteredInvitations = computed(() => {
-  let filtered = invitationStore.invitations.filter(invitation =>
-    invitation.guestName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+  let filtered = invitationStore.invitations.filter(invitation => {
+    const matchesSearch = invitation.guestName.toLowerCase().includes(searchQuery.value.toLowerCase())
+    
+    const matchesConfirmation = confirmationFilter.value === 'all' ||
+                               (confirmationFilter.value === 'confirmed' && invitation.confirmed) ||
+                               (confirmationFilter.value === 'pending' && !invitation.confirmed)
+    
+    return matchesSearch && matchesConfirmation
+  })
 
   // Ordenamiento
   filtered.sort((a, b) => {
-    let aValue: any = a[sortBy.value]
-    let bValue: any = b[sortBy.value]
+    let aValue: any
+    let bValue: any
 
-    if (sortBy.value === 'createdAt') {
-      aValue = new Date(aValue).getTime()
-      bValue = new Date(bValue).getTime()
+    switch (sortBy.value) {
+      case 'guestName':
+        aValue = a.guestName.toLowerCase()
+        bValue = b.guestName.toLowerCase()
+        break
+      case 'numberOfCompanions':
+        aValue = a.numberOfCompanions
+        bValue = b.numberOfCompanions
+        break
+      case 'createdAt':
+        aValue = new Date(a.createdAt)
+        bValue = new Date(b.createdAt)
+        break
+      case 'confirmed':
+        aValue = a.confirmed ? 1 : 0
+        bValue = b.confirmed ? 1 : 0
+        break
+      default:
+        return 0
     }
 
-    if (sortOrder.value === 'asc') {
-      return aValue > bValue ? 1 : -1
-    } else {
-      return aValue < bValue ? 1 : -1
-    }
+    if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1
+    if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
   })
 
   return filtered
@@ -69,7 +90,21 @@ const isAllSelected = computed(() => {
 })
 
 const invitationStats = computed(() => {
-  return invitationStore.getInvitationStats
+  const stats = invitationStore.getInvitationStats
+  const confirmedInvitations = invitationStore.invitations.filter(inv => inv.confirmed).length
+  const pendingInvitations = invitationStore.invitations.filter(inv => !inv.confirmed).length
+  const confirmedGuests = invitationStore.invitations
+    .filter(inv => inv.confirmed)
+    .reduce((total, invitation) => {
+      return total + 1 + invitation.numberOfCompanions
+    }, 0)
+  
+  return {
+    ...stats,
+    confirmedInvitations,
+    pendingInvitations,
+    confirmedGuests
+  }
 })
 
 // Métodos
@@ -149,12 +184,23 @@ const toggleSelectAll = () => {
   }
 }
 
-const toggleSort = (field: 'guestName' | 'numberOfCompanions' | 'createdAt') => {
+const toggleSort = (field: 'guestName' | 'numberOfCompanions' | 'createdAt' | 'confirmed') => {
   if (sortBy.value === field) {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortBy.value = field
     sortOrder.value = 'asc'
+  }
+}
+
+const toggleConfirmation = async (invitationId: string) => {
+  try {
+    const invitation = invitationStore.invitations.find(inv => inv._id === invitationId)
+    if (invitation) {
+      await invitationStore.confirmInvitation(invitationId, !invitation.confirmed)
+    }
+  } catch (error) {
+    console.error('Error al cambiar estado de confirmación:', error)
   }
 }
 
@@ -216,18 +262,25 @@ onMounted(() => {
             <span class="stat-label">Total Invitaciones</span>
           </div>
         </div>
-        <div class="stat-card">
-          <i class="fas fa-users"></i>
+        <div class="stat-card confirmed">
+          <i class="fas fa-check-circle"></i>
           <div class="stat-content">
-            <span class="stat-number">{{ invitationStats.totalGuests }}</span>
-            <span class="stat-label">Total Invitados</span>
+            <span class="stat-number">{{ invitationStats.confirmedInvitations }}</span>
+            <span class="stat-label">Confirmadas</span>
+          </div>
+        </div>
+        <div class="stat-card pending">
+          <i class="fas fa-clock"></i>
+          <div class="stat-content">
+            <span class="stat-number">{{ invitationStats.pendingInvitations }}</span>
+            <span class="stat-label">Pendientes</span>
           </div>
         </div>
         <div class="stat-card">
-          <i class="fas fa-user-plus"></i>
+          <i class="fas fa-users"></i>
           <div class="stat-content">
-            <span class="stat-number">{{ invitationStats.averageCompanions.toFixed(1) }}</span>
-            <span class="stat-label">Promedio Acompañantes</span>
+            <span class="stat-number">{{ invitationStats.confirmedGuests }}</span>
+            <span class="stat-label">Invitados Confirmados</span>
           </div>
         </div>
       </div>
@@ -243,6 +296,15 @@ onMounted(() => {
           placeholder="Buscar por nombre del invitado..."
           class="search-input"
         >
+      </div>
+      
+      <!-- Filtro de confirmación -->
+      <div class="confirmation-filter">
+        <select v-model="confirmationFilter" class="filter-select">
+          <option value="all">Todas las invitaciones</option>
+          <option value="confirmed">Confirmadas</option>
+          <option value="pending">Pendientes</option>
+        </select>
       </div>
       
       <div class="actions-container">
@@ -313,6 +375,13 @@ onMounted(() => {
                 'fa-sort-down': sortBy === 'createdAt' && sortOrder === 'desc'
               }"></i>
             </th>
+            <th @click="toggleSort('confirmed')" class="sortable">
+              Estado
+              <i class="fas fa-sort sort-icon" :class="{
+                'fa-sort-up': sortBy === 'confirmed' && sortOrder === 'asc',
+                'fa-sort-down': sortBy === 'confirmed' && sortOrder === 'desc'
+              }"></i>
+            </th>
             <th class="actions-column">Acciones</th>
           </tr>
         </thead>
@@ -343,6 +412,16 @@ onMounted(() => {
                 hour: '2-digit',
                 minute: '2-digit'
               }) }}
+            </td>
+            <td class="confirmation-status">
+              <button
+                @click="toggleConfirmation(invitation._id)"
+                class="confirmation-toggle"
+                :class="{ 'confirmed': invitation.confirmed, 'pending': !invitation.confirmed }"
+              >
+                <i :class="invitation.confirmed ? 'fas fa-check-circle' : 'fas fa-clock'"></i>
+                {{ invitation.confirmed ? 'Confirmada' : 'Pendiente' }}
+              </button>
             </td>
             <td class="actions-column">
               <div class="action-buttons">
@@ -616,6 +695,22 @@ onMounted(() => {
     text-align: center;
   }
   
+  &.confirmed {
+    border-left: 4px solid #28a745;
+    
+    i {
+      color: #28a745;
+    }
+  }
+  
+  &.pending {
+    border-left: 4px solid #ffc107;
+    
+    i {
+      color: #ffc107;
+    }
+  }
+  
   .stat-content {
     display: flex;
     flex-direction: column;
@@ -715,7 +810,8 @@ onMounted(() => {
   }
 }
 
-.items-per-page {
+.items-per-page,
+.filter-select {
   @include body-font(400);
   padding: 0.75rem;
   border: 2px solid #e9ecef;
@@ -726,6 +822,16 @@ onMounted(() => {
   &:focus {
     outline: none;
     border-color: $primary-color;
+  }
+}
+
+.confirmation-filter {
+  display: flex;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    order: -1;
+    width: 100%;
   }
 }
 
@@ -865,6 +971,37 @@ onMounted(() => {
   border-radius: 50%;
   font-weight: 600;
   font-size: 0.875rem;
+}
+
+.confirmation-toggle {
+  @include body-font(600);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  
+  &.confirmed {
+    background: #28a745;
+    color: white;
+    
+    &:hover {
+      background: color.adjust(#28a745, $lightness: -10%);
+    }
+  }
+  
+  &.pending {
+    background: #ffc107;
+    color: #212529;
+    
+    &:hover {
+      background: color.adjust(#ffc107, $lightness: -10%);
+    }
+  }
 }
 
 .action-buttons {
