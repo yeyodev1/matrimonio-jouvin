@@ -32,11 +32,11 @@ const deletingInvitation = ref<IInvitation | null>(null)
 const filteredInvitations = computed(() => {
   let filtered = invitationStore.invitations.filter(invitation => {
     const matchesSearch = invitation.guestName.toLowerCase().includes(searchQuery.value.toLowerCase())
-    
+
     const matchesConfirmation = confirmationFilter.value === 'all' ||
-                               (confirmationFilter.value === 'confirmed' && invitation.confirmed) ||
-                               (confirmationFilter.value === 'pending' && !invitation.confirmed)
-    
+      (confirmationFilter.value === 'confirmed' && invitation.confirmed) ||
+      (confirmationFilter.value === 'pending' && !invitation.confirmed)
+
     return matchesSearch && matchesConfirmation
   })
 
@@ -85,8 +85,8 @@ const totalPages = computed(() => {
 })
 
 const isAllSelected = computed(() => {
-  return paginatedInvitations.value.length > 0 && 
-         selectedInvitations.value.length === paginatedInvitations.value.length
+  return paginatedInvitations.value.length > 0 &&
+    selectedInvitations.value.length === paginatedInvitations.value.length
 })
 
 const invitationStats = computed(() => {
@@ -98,7 +98,7 @@ const invitationStats = computed(() => {
     .reduce((total, invitation) => {
       return total + 1 + invitation.numberOfCompanions
     }, 0)
-  
+
   return {
     ...stats,
     confirmedInvitations,
@@ -136,7 +136,7 @@ const saveInvitation = async () => {
       guestName: editingInvitation.guestName,
       numberOfCompanions: editingInvitation.numberOfCompanions
     }
-    
+
     await invitationStore.updateInvitation(editingInvitation.id, updateData)
     closeEditModal()
   } catch (error) {
@@ -600,50 +600,50 @@ onMounted(() => {
 .header-section {
   max-width: 1200px;
   margin: 0 auto 3rem;
-  
+
   .header-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
-    
+
     @media (max-width: 768px) {
       flex-direction: column;
       gap: 1.5rem;
     }
   }
-  
+
   .title-section {
     text-align: left;
-    
+
     @media (max-width: 768px) {
       text-align: center;
     }
   }
-  
+
   .header-icon {
     font-size: 3rem;
     color: $primary-color;
     margin-bottom: 1rem;
   }
-  
+
   .main-title {
     @include heading-font(700);
     font-size: 2.5rem;
     color: $primary-color;
     margin-bottom: 0.5rem;
-    
+
     @media (max-width: 768px) {
       font-size: 2rem;
     }
   }
-  
+
   .subtitle {
     @include body-font(400);
     font-size: 1.1rem;
     color: $charcoal;
   }
-  
+
   .create-button {
     @include body-font(600);
     padding: 1rem 2rem;
@@ -656,7 +656,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    
+
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba($primary-color, 0.3);
@@ -668,7 +668,7 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -683,47 +683,47 @@ onMounted(() => {
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-2px);
   }
-  
+
   i {
     font-size: 2rem;
     color: $secondary-color;
     width: 40px;
     text-align: center;
   }
-  
+
   &.confirmed {
     border-left: 4px solid #28a745;
-    
+
     i {
       color: #28a745;
     }
   }
-  
+
   &.pending {
     border-left: 4px solid #ffc107;
-    
+
     i {
       color: #ffc107;
     }
   }
-  
+
   .stat-content {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .stat-number {
     @include heading-font(700);
     font-size: 1.8rem;
     color: $primary-color;
     line-height: 1;
   }
-  
+
   .stat-label {
     @include body-font(500);
     font-size: 0.875rem;
@@ -740,7 +740,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: stretch;
@@ -751,11 +751,11 @@ onMounted(() => {
   position: relative;
   flex: 1;
   max-width: 400px;
-  
+
   @media (max-width: 768px) {
     max-width: none;
   }
-  
+
   .search-icon {
     position: absolute;
     left: 1rem;
@@ -764,16 +764,15 @@ onMounted(() => {
     color: $charcoal;
     opacity: 0.6;
   }
-  
+
   .search-input {
     @include body-font(400);
-    width: 100%;
     padding: 1rem 1rem 1rem 3rem;
     border: 2px solid #e9ecef;
     border-radius: 12px;
     font-size: 1rem;
     transition: all 0.3s ease;
-    
+
     &:focus {
       outline: none;
       border-color: $primary-color;
@@ -786,7 +785,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 1rem;
-  
+
   @media (max-width: 768px) {
     justify-content: space-between;
   }
@@ -804,7 +803,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &:hover {
     background: color.adjust(#dc3545, $lightness: -10%);
   }
@@ -818,7 +817,7 @@ onMounted(() => {
   border-radius: 8px;
   background: white;
   cursor: pointer;
-  
+
   &:focus {
     outline: none;
     border-color: $primary-color;
@@ -828,7 +827,7 @@ onMounted(() => {
 .confirmation-filter {
   display: flex;
   align-items: center;
-  
+
   @media (max-width: 768px) {
     order: -1;
     width: 100%;
@@ -848,20 +847,20 @@ onMounted(() => {
 .empty-state {
   padding: 4rem 2rem;
   text-align: center;
-  
+
   i {
     font-size: 3rem;
     color: $secondary-color;
     margin-bottom: 1rem;
   }
-  
+
   h3 {
     @include heading-font(600);
     font-size: 1.5rem;
     color: $primary-color;
     margin-bottom: 0.5rem;
   }
-  
+
   p {
     @include body-font(400);
     color: $charcoal;
@@ -881,7 +880,7 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba($primary-color, 0.3);
@@ -891,7 +890,7 @@ onMounted(() => {
 .invitations-table {
   width: 100%;
   border-collapse: collapse;
-  
+
   th {
     @include body-font(600);
     padding: 1rem;
@@ -899,38 +898,38 @@ onMounted(() => {
     background: $background-color;
     color: $primary-color;
     border-bottom: 2px solid #e9ecef;
-    
+
     &.sortable {
       cursor: pointer;
       user-select: none;
       transition: background-color 0.3s ease;
-      
+
       &:hover {
         background: color.adjust($background-color, $lightness: -3%);
       }
     }
-    
+
     &.checkbox-column,
     &.actions-column {
       width: 80px;
       text-align: center;
     }
   }
-  
+
   td {
     @include body-font(400);
     padding: 1rem;
     border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
-    
+
     &.checkbox-column {
       text-align: center;
     }
   }
-  
+
   .invitation-row {
     transition: background-color 0.3s ease;
-    
+
     &:hover {
       background: rgba($background-color, 0.5);
     }
@@ -947,12 +946,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  
+
   .name {
     font-weight: 600;
     color: $primary-color;
   }
-  
+
   .id {
     font-size: 0.75rem;
     color: $charcoal;
@@ -984,20 +983,20 @@ onMounted(() => {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  
+
   &.confirmed {
     background: #28a745;
     color: white;
-    
+
     &:hover {
       background: color.adjust(#28a745, $lightness: -10%);
     }
   }
-  
+
   &.pending {
     background: #ffc107;
     color: #212529;
-    
+
     &:hover {
       background: color.adjust(#ffc107, $lightness: -10%);
     }
@@ -1020,38 +1019,38 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &.copy-button {
     background: $accent-color;
     color: white;
-    
+
     &:hover {
       background: color.adjust($accent-color, $lightness: -10%);
     }
   }
-  
+
   &.whatsapp-button {
     background: #25d366;
     color: white;
-    
+
     &:hover {
       background: color.adjust(#25d366, $lightness: -10%);
     }
   }
-  
+
   &.edit-button {
     background: $primary-color;
     color: white;
-    
+
     &:hover {
       background: color.adjust($primary-color, $lightness: -10%);
     }
   }
-  
+
   &.delete-button {
     background: #dc3545;
     color: white;
-    
+
     &:hover {
       background: color.adjust(#dc3545, $lightness: -10%);
     }
@@ -1064,7 +1063,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 1rem;
@@ -1083,12 +1082,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &:hover:not(:disabled) {
     background: $primary-color;
     color: white;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -1123,7 +1122,7 @@ onMounted(() => {
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  
+
   &.delete-modal {
     max-width: 400px;
   }
@@ -1135,14 +1134,14 @@ onMounted(() => {
   align-items: center;
   padding: 1.5rem;
   border-bottom: 1px solid #e9ecef;
-  
+
   h3 {
     @include heading-font(600);
     font-size: 1.25rem;
     color: $primary-color;
     margin: 0;
   }
-  
+
   .close-button {
     width: 32px;
     height: 32px;
@@ -1152,7 +1151,7 @@ onMounted(() => {
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.3s ease;
-    
+
     &:hover {
       background: #e9ecef;
     }
@@ -1173,7 +1172,7 @@ onMounted(() => {
 
 .form-group {
   margin-bottom: 1.5rem;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -1186,7 +1185,7 @@ onMounted(() => {
   gap: 0.5rem;
   color: $primary-color;
   margin-bottom: 0.5rem;
-  
+
   i {
     color: $secondary-color;
   }
@@ -1200,7 +1199,7 @@ onMounted(() => {
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  
+
   &:focus {
     outline: none;
     border-color: $primary-color;
@@ -1213,7 +1212,7 @@ onMounted(() => {
   align-items: center;
   gap: 0;
   max-width: 200px;
-  
+
   .number-btn {
     @include body-font(600);
     width: 40px;
@@ -1226,23 +1225,23 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     &:first-child {
       border-radius: 8px 0 0 8px;
       border-right: none;
     }
-    
+
     &:last-child {
       border-radius: 0 8px 8px 0;
       border-left: none;
     }
-    
+
     &:hover {
       background: $primary-color;
       color: white;
     }
   }
-  
+
   .number-input {
     @include body-font(600);
     width: 60px;
@@ -1253,7 +1252,7 @@ onMounted(() => {
     text-align: center;
     font-size: 1rem;
     background: white;
-    
+
     &:focus {
       outline: none;
       border-color: $primary-color;
@@ -1270,7 +1269,7 @@ onMounted(() => {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: #e9ecef;
   }
@@ -1288,11 +1287,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &:hover:not(:disabled) {
     background: color.adjust($primary-color, $lightness: -10%);
   }
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -1311,11 +1310,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &:hover:not(:disabled) {
     background: color.adjust(#dc3545, $lightness: -10%);
   }
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -1324,18 +1323,18 @@ onMounted(() => {
 
 .delete-warning {
   text-align: center;
-  
+
   i {
     font-size: 3rem;
     color: #dc3545;
     margin-bottom: 1rem;
   }
-  
+
   p {
     @include body-font(400);
     color: $charcoal;
     margin-bottom: 0.5rem;
-    
+
     &.warning-text {
       font-size: 0.875rem;
       color: #dc3545;
