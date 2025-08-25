@@ -1,7 +1,10 @@
 import InvitationView from '@/views/InvitationView.vue'
 import CreateInvitationView from '@/views/CreateInvitationView.vue'
 import ManageInvitationsView from '@/views/ManageInvitationsView.vue'
+import LoginView from '@/views/LoginView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 
 // Helper para formatear nombres de invitados
 const formatGuestNameForTitle = (guestName: string): string => {
@@ -11,6 +14,19 @@ const formatGuestNameForTitle = (guestName: string): string => {
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      name: 'home',
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: {
+        title: 'Login - Panel de Administración'
+      }
+    },
     {
       path: '/invitation/:guestName',
       name: 'invitation',
@@ -39,7 +55,8 @@ const router = createRouter({
       name: 'create-invitation',
       component: CreateInvitationView,
       meta: {
-        title: 'Crear Invitación - Panel de Administración'
+        title: 'Crear Invitación - Panel de Administración',
+        requiresAuth: true
       }
     },
     {
@@ -47,10 +64,47 @@ const router = createRouter({
       name: 'manage-invitations',
       component: ManageInvitationsView,
       meta: {
-        title: 'Gestionar Invitaciones - Panel de Administración'
+        title: 'Gestionar Invitaciones - Panel de Administración',
+        requiresAuth: true
       }
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFoundView,
+      meta: {
+        title: 'Página no encontrada'
+      }
+    }
   ],
+})
+
+// Guard de autenticación
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  
+  // Verificar autenticación desde localStorage al iniciar
+  authStore.checkAuthFromStorage()
+  
+  // Si la ruta requiere autenticación
+  if (to.meta.requiresAuth) {
+    if (!authStore.isSessionValid) {
+      // Redirigir al login si no está autenticado o la sesión expiró
+      next({ name: 'login' })
+      return
+    } else {
+      // Refrescar la sesión si está autenticado
+      authStore.refreshSession()
+    }
+  }
+  
+  // Si está autenticado y trata de acceder al login, redirigir a manage-invitations
+  if (to.name === 'login' && authStore.isSessionValid) {
+    next({ name: 'manage-invitations' })
+    return
+  }
+  
+  next()
 })
 
 export default router
