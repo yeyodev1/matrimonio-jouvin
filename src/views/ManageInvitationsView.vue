@@ -841,6 +841,13 @@ onMounted(() => {
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
 }
 
 .loading-state,
@@ -890,6 +897,11 @@ onMounted(() => {
 .invitations-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 800px; // Ancho mínimo para scroll horizontal
+
+  @media (max-width: 768px) {
+    min-width: 900px; // Asegurar scroll horizontal en móviles
+  }
 
   th {
     @include body-font(600);
@@ -898,6 +910,12 @@ onMounted(() => {
     background: $background-color;
     color: $primary-color;
     border-bottom: 2px solid #e9ecef;
+    white-space: nowrap; // Evitar que el texto se corte
+
+    @media (max-width: 768px) {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.85rem;
+    }
 
     &.sortable {
       cursor: pointer;
@@ -909,10 +927,20 @@ onMounted(() => {
       }
     }
 
-    &.checkbox-column,
-    &.actions-column {
+    &.checkbox-column {
       width: 80px;
       text-align: center;
+      min-width: 60px;
+    }
+
+    &.actions-column {
+      width: 200px;
+      text-align: center;
+      min-width: 180px;
+
+      @media (max-width: 768px) {
+        min-width: 160px;
+      }
     }
   }
 
@@ -921,9 +949,45 @@ onMounted(() => {
     padding: 1rem;
     border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
+    white-space: nowrap; // Evitar que el texto se corte
+
+    @media (max-width: 768px) {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.85rem;
+    }
 
     &.checkbox-column {
       text-align: center;
+    }
+
+    &.guest-name {
+      min-width: 180px;
+
+      @media (max-width: 768px) {
+        min-width: 150px;
+      }
+    }
+
+    &.companions {
+      min-width: 100px;
+      text-align: center;
+    }
+
+    &.created-date {
+      min-width: 140px;
+
+      @media (max-width: 768px) {
+        min-width: 120px;
+      }
+    }
+
+    &.confirmation-status {
+      min-width: 130px;
+      text-align: center;
+
+      @media (max-width: 768px) {
+        min-width: 110px;
+      }
     }
   }
 
@@ -983,6 +1047,13 @@ onMounted(() => {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    gap: 0.3rem;
+  }
 
   &.confirmed {
     background: #28a745;
@@ -1007,6 +1078,11 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
+  flex-wrap: nowrap;
+
+  @media (max-width: 768px) {
+    gap: 0.3rem;
+  }
 }
 
 .action-button {
@@ -1019,6 +1095,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
 
   &.copy-button {
     background: $accent-color;
