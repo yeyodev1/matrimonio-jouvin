@@ -242,23 +242,12 @@ const toggleAudio = () => {
       </div>
     </div>
 
-    <!-- Audio Controls (appears after envelope opens) -->
-    <div v-if="isCardOpen" class="audio-controls">
-      <button 
-        @click="toggleAudio" 
-        class="audio-toggle"
-        :class="{ 'playing': isAudioPlaying }"
-      >
-        <i v-if="isAudioPlaying" class="fas fa-pause"></i>
-        <i v-else class="fas fa-play"></i>
-      </button>
-    </div>
+
     
     <!-- Countdown Music Player Component -->
     <CountdownMusicPlayer 
       v-if="isCardOpen"
-      :is-audio-playing="isAudioPlaying"
-      @toggle-audio="toggleAudio"
+      :audio-ref="audioRef"
     />
   </main>
 </template>
@@ -804,51 +793,7 @@ const toggleAudio = () => {
   }
 }
 
-// Audio controls
-.audio-controls {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 1000;
-}
 
-.audio-toggle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 2px solid $dusty-rose;
-  background: rgba($cream-white, 0.95);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.2rem;
-
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba($dusty-rose, 0.3);
-  }
-
-  &.playing {
-    border-color: $warm-brown;
-    background: rgba($warm-brown, 0.1);
-    animation: musicPulse 1.5s infinite;
-  }
-}
-
-@keyframes musicPulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.05);
-  }
-}
 
 // Welcome section styles
 .welcome-section {
