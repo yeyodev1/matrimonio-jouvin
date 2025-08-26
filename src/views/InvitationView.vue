@@ -8,6 +8,7 @@ import WeddingSchedule from '@/components/WeddingSchedule.vue'
 import DressCodeGifts from '@/components/DressCodeGifts.vue'
 import WeddingRSVP from '@/components/WeddingRSVP.vue'
 import couplePhoto from '@/assets/boda/fotaza.jpeg'
+import couplePhoto2 from '@/assets/boda/fotaza-2.png'
 
 // Router y Store
 const route = useRoute()
@@ -232,6 +233,11 @@ const toggleAudio = () => {
                   <i class="fas fa-map-marker-alt"></i> Ubicación aquí
                 </a>
               </div>
+            </div>
+
+            <!-- Segunda foto de la pareja -->
+            <div class="couple-photo-2">
+              <img :src="couplePhoto2" alt="Génesis y Christopher" class="second-photo" />
             </div>
 
             <!-- Cronograma de actividades -->
@@ -913,6 +919,47 @@ const toggleAudio = () => {
     transform: scale(1.02);
     box-shadow: 0 15px 35px rgba($dark-teal, 0.25);
     border-color: rgba($dusty-rose, 0.5);
+  }
+}
+
+// Estilos para la segunda foto de la pareja
+.couple-photo-2 {
+  margin: 1.5rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    margin: 2rem 0;
+  }
+}
+
+.second-photo {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba($warm-brown, 0.15);
+  border: 2px solid rgba($warm-brown, 0.3);
+  transition: all 0.3s ease;
+  object-fit: cover;
+  aspect-ratio: 3/4;
+
+  @media (min-width: 768px) {
+    max-width: 300px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba($warm-brown, 0.2);
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 330px;
+  }
+
+  &:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 20px 40px rgba($warm-brown, 0.25);
+    border-color: rgba($warm-brown, 0.5);
   }
 }
 
