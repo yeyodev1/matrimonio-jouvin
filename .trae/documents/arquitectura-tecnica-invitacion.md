@@ -267,7 +267,7 @@ const weddingData: WeddingData = {
     { time: '11:30 PM', activity: 'Pastel', icon: 'cake' },
     { time: '7:00 AM', activity: 'Hasta que el cuerpo aguante', icon: 'party' },
   ],
-  musicSrc: '../../src/assets/song/voy-a-quererte.mp3',
+  musicSrc: '../../src/assets/song/Hijos-del-Amanecer.mp3',
 }
 ```
 
