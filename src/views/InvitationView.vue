@@ -122,7 +122,7 @@ const toggleAudio = () => {
       preload="auto"
       @ended="isAudioPlaying = false"
     >
-      <source src="/src/assets/song/voy-a-quererte.mp3" type="audio/mpeg">
+      <source src="/src/assets/song/Hijos-del-Amanecer.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Welcome Section -->
