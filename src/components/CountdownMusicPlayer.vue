@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 
-// Audio element reference
+// Props
+const props = defineProps<{
+  audioRef?: HTMLAudioElement | null
+}>()
+
+// Audio element reference - use prop or create new
 const audioElement = ref<HTMLAudioElement | null>(null)
 const isPlaying = ref(false)
 const currentTime = ref(0)
@@ -58,58 +63,66 @@ const updateCountdown = () => {
 
 // Audio controls
 const togglePlay = () => {
-  if (!audioElement.value) return
+  const audio = props.audioRef || audioElement.value
+  if (!audio) return
   
   if (isPlaying.value) {
-    audioElement.value.pause()
+    audio.pause()
   } else {
-    audioElement.value.play()
+    audio.play()
   }
 }
 
 const skipForward = () => {
-  if (!audioElement.value) return
-  audioElement.value.currentTime = Math.min(audioElement.value.currentTime + 10, duration.value)
+  const audio = props.audioRef || audioElement.value
+  if (!audio) return
+  audio.currentTime = Math.min(audio.currentTime + 10, duration.value)
 }
 
 const skipBackward = () => {
-  if (!audioElement.value) return
-  audioElement.value.currentTime = Math.max(audioElement.value.currentTime - 10, 0)
+  const audio = props.audioRef || audioElement.value
+  if (!audio) return
+  audio.currentTime = Math.max(audio.currentTime - 10, 0)
 }
 
 const toggleMute = () => {
-  if (!audioElement.value) return
+  const audio = props.audioRef || audioElement.value
+  if (!audio) return
   isMuted.value = !isMuted.value
-  audioElement.value.muted = isMuted.value
+  audio.muted = isMuted.value
 }
 
 const setVolume = (newVolume: number) => {
-  if (!audioElement.value) return
+  const audio = props.audioRef || audioElement.value
+  if (!audio) return
   volume.value = newVolume
-  audioElement.value.volume = newVolume
+  audio.volume = newVolume
   if (newVolume > 0 && isMuted.value) {
     isMuted.value = false
-    audioElement.value.muted = false
+    audio.muted = false
   }
 }
 
 const seekTo = (percentage: number) => {
-  if (!audioElement.value || duration.value === 0) return
+  const audio = props.audioRef || audioElement.value
+  if (!audio || duration.value === 0) return
   const newTime = (percentage / 100) * duration.value
-  audioElement.value.currentTime = newTime
+  audio.currentTime = newTime
 }
 
 // Audio event handlers
 const onLoadedMetadata = () => {
-  if (audioElement.value) {
-    duration.value = audioElement.value.duration
-    audioElement.value.volume = volume.value
+  const audio = props.audioRef || audioElement.value
+  if (audio) {
+    duration.value = audio.duration
+    audio.volume = volume.value
   }
 }
 
 const onTimeUpdate = () => {
-  if (audioElement.value) {
-    currentTime.value = audioElement.value.currentTime
+  const audio = props.audioRef || audioElement.value
+  if (audio) {
+    currentTime.value = audio.currentTime
   }
 }
 
@@ -126,6 +139,34 @@ const onEnded = () => {
   currentTime.value = 0
 }
 
+// Setup audio event listeners
+const setupAudioListeners = (audio: HTMLAudioElement) => {
+  audio.addEventListener('loadedmetadata', onLoadedMetadata)
+  audio.addEventListener('timeupdate', onTimeUpdate)
+  audio.addEventListener('play', onPlay)
+  audio.addEventListener('pause', onPause)
+  audio.addEventListener('ended', onEnded)
+}
+
+const removeAudioListeners = (audio: HTMLAudioElement) => {
+  audio.removeEventListener('loadedmetadata', onLoadedMetadata)
+  audio.removeEventListener('timeupdate', onTimeUpdate)
+  audio.removeEventListener('play', onPlay)
+  audio.removeEventListener('pause', onPause)
+  audio.removeEventListener('ended', onEnded)
+}
+
+// Watch for audioRef changes
+watch(() => props.audioRef, (newAudio, oldAudio) => {
+  if (oldAudio) {
+    removeAudioListeners(oldAudio)
+  }
+  if (newAudio) {
+    setupAudioListeners(newAudio)
+    onLoadedMetadata()
+  }
+}, { immediate: true })
+
 const handleProgressClick = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLElement
   if (target) {
@@ -138,25 +179,32 @@ const handleProgressClick = (event: MouseEvent) => {
 onMounted(() => {
   updateCountdown()
   countdownInterval = setInterval(updateCountdown, 1000)
+  
+  // Setup listeners for internal audio element if no audioRef provided
+  if (!props.audioRef && audioElement.value) {
+    setupAudioListeners(audioElement.value)
+  }
 })
 
 onUnmounted(() => {
   if (countdownInterval) {
     clearInterval(countdownInterval)
   }
+  
+  // Clean up listeners
+  const audio = props.audioRef || audioElement.value
+  if (audio) {
+    removeAudioListeners(audio)
+  }
 })
 </script>
 
 <template>
   <div class="countdown-music-player">
-    <!-- Audio element -->
+    <!-- Audio element (only if no external audioRef provided) -->
     <audio 
+      v-if="!props.audioRef"
       ref="audioElement"
-      @loadedmetadata="onLoadedMetadata"
-      @timeupdate="onTimeUpdate"
-      @play="onPlay"
-      @pause="onPause"
-      @ended="onEnded"
       preload="metadata"
     >
       <source src="/src/assets/song/voy-a-quererte.mp3" type="audio/mpeg">
