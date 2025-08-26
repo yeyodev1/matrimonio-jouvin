@@ -127,6 +127,10 @@ const previewInvitation = () => {
   }
 }
 
+const goToManageInvitations = () => {
+  router.push('/manage-invitations')
+}
+
 const guestText = computed(() => {
   if (form.numberOfGuests === 1) {
     return 'invitado'
@@ -161,6 +165,12 @@ onMounted(async () => {
 
 <template>
   <div class="create-invitation-container">
+    <!-- Botón de regreso al dashboard -->
+    <button @click="goToManageInvitations" class="back-to-dashboard-button" title="Volver al Dashboard">
+      <i class="fas fa-arrow-left"></i>
+      <span>Dashboard</span>
+    </button>
+    
     <div class="header-section">
       <i class="fas fa-magic header-icon"></i>
       <h1 class="main-title">Crear Invitación Personalizada</h1>
@@ -383,10 +393,16 @@ onMounted(async () => {
         </div>
       </div>
 
-      <button @click="resetForm" class="new-invitation-button">
-        <i class="fas fa-plus"></i>
-        Crear Nueva Invitación
-      </button>
+      <div class="action-buttons-container">
+        <button @click="resetForm" class="new-invitation-button">
+          <i class="fas fa-plus"></i>
+          Crear Nueva Invitación
+        </button>
+        <button @click="goToManageInvitations" class="manage-invitations-button">
+          <i class="fas fa-list-alt"></i>
+          Ver Dashboard
+        </button>
+      </div>
     </div>
 
     <!-- Decoración de fondo -->
@@ -411,6 +427,51 @@ onMounted(async () => {
   padding: 2rem 1rem;
   position: relative;
   overflow-x: hidden;
+}
+
+.back-to-dashboard-button {
+  @include body-font(600);
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: $primary-color;
+  border: 2px solid $primary-color;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background: $primary-color;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(68, 93, 87, 0.3);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+
+  span {
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
 }
 
 .header-section {
@@ -945,10 +1006,20 @@ onMounted(async () => {
   }
 }
 
+.action-buttons-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .new-invitation-button {
   @include body-font(600);
-  display: block;
-  margin: 0 auto;
   padding: 1rem 2rem;
   background: transparent;
   color: $primary-color;
@@ -956,6 +1027,10 @@ onMounted(async () => {
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 
   &:hover {
     background: $primary-color;
@@ -964,7 +1039,31 @@ onMounted(async () => {
   }
 
   i {
-    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+.manage-invitations-button {
+  @include body-font(600);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, $secondary-color 0%, color.adjust($secondary-color, $lightness: -10%) 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(184, 134, 11, 0.3);
+  }
+
+  i {
+    font-size: 1rem;
   }
 }
 
