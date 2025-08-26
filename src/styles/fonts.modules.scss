@@ -2,7 +2,7 @@
 @use 'sass:string';
 
 // Google Fonts - Selección elegante y romántica para boda
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Great+Vibes:wght@400&family=Dancing+Script:wght@400;500;600;700&display=swap');
 
 // Fuentes elegantes y románticas para boda
 // Playfair Display: Perfecta para títulos principales, elegante y sofisticada
@@ -18,6 +18,8 @@
   --font-lora: 'Lora', serif;
   --font-crimson: 'Crimson Text', serif;
   --font-source-sans: 'Source Sans 3', sans-serif;
+  --font-great-vibes: 'Great Vibes', cursive;
+  --font-dancing-script: 'Dancing Script', cursive;
 }
 
 // Variables SCSS para uso en componentes de boda
@@ -26,6 +28,8 @@ $font-secondary: 'Lora', serif;                  // Para texto de cuerpo, legibl
 $font-accent: 'Cormorant Garamond', serif;       // Para subtítulos y elementos románticos
 $font-special: 'Crimson Text', serif;            // Para citas, votos y elementos especiales
 $font-interface: 'Source Sans 3', sans-serif;    // Para elementos de UI y navegación moderna
+$font-extravagant: 'Great Vibes', cursive;       // Para nombres de padres, muy elegante y extravagante
+$font-dancing: 'Dancing Script', cursive;        // Alternativa elegante para elementos especiales
 
 // Mixins para facilitar el uso en el sitio de boda
 @mixin heading-font($weight: 600) {
@@ -59,4 +63,18 @@ $font-interface: 'Source Sans 3', sans-serif;    // Para elementos de UI y naveg
   font-family: $font-interface;
   font-weight: $weight;
   line-height: 1.5;
+}
+
+@mixin extravagant-font($weight: 400) {
+  font-family: $font-extravagant;
+  font-weight: $weight;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+@mixin dancing-font($weight: 400) {
+  font-family: $font-dancing;
+  font-weight: $weight;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
 }
