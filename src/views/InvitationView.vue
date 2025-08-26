@@ -943,8 +943,8 @@ const toggleAudio = () => {
   box-shadow: 0 10px 30px rgba($warm-brown, 0.15);
   border: 2px solid rgba($warm-brown, 0.3);
   transition: all 0.3s ease;
-  object-fit: cover;
-  aspect-ratio: 3/4;
+  object-fit: contain;
+  display: block;
 
   @media (min-width: 768px) {
     max-width: 300px;
