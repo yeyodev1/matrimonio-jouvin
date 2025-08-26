@@ -5,50 +5,36 @@ import { ref } from 'vue'
 const scheduleItems = ref([
   {
     time: '5:00 PM',
-    title: 'Ceremonia',
-    subtitle: 'Religiosa',
+    title: 'Inicio de',
+    subtitle: 'Misa',
     icon: 'rings',
     side: 'right'
   },
   {
     time: '6:00 PM',
-    title: 'Sesión de',
-    subtitle: 'Fotos',
+    title: 'Sesión de fotos',
+    subtitle: 'en iglesia',
     icon: 'camera',
     side: 'left'
   },
   {
+    time: '7:00 PM',
+    title: 'Recepción de',
+    subtitle: 'Invitados',
+    icon: 'reception',
+    side: 'right'
+  },
+  {
     time: '7:30 PM',
-    title: 'Primer',
-    subtitle: 'Baile',
-    icon: 'dance',
+    title: 'Inicio de',
+    subtitle: 'Programa',
+    icon: 'program',
     side: 'left'
   },
   {
-    time: '8:30 PM',
-    title: 'Brindis',
-    subtitle: '',
-    icon: 'toast',
-    side: 'right'
-  },
-  {
-    time: '10:00 PM',
-    title: 'Cena',
-    subtitle: '',
-    icon: 'dinner',
-    side: 'right'
-  },
-  {
-    time: '11:30 PM',
-    title: 'Pastel',
-    subtitle: '',
-    icon: 'cake',
-    side: 'left'
-  },
-  {
-    time: '? AM',
-    title: 'Hasta que el',
-    subtitle: 'cuerpo aguante',
+    time: '2:00 AM',
+    title: 'Fin del',
+    subtitle: 'Evento',
     icon: 'party',
     side: 'right'
   }
@@ -87,10 +73,8 @@ const scheduleItems = ref([
             <!-- Iconos Font Awesome -->
             <i v-if="item.icon === 'rings'" class="fas fa-heart icon"></i>
             <i v-else-if="item.icon === 'camera'" class="fas fa-camera icon"></i>
-            <i v-else-if="item.icon === 'dance'" class="fas fa-music icon"></i>
-            <i v-else-if="item.icon === 'toast'" class="fas fa-wine-glass-alt icon"></i>
-            <i v-else-if="item.icon === 'dinner'" class="fas fa-utensils icon"></i>
-            <i v-else-if="item.icon === 'cake'" class="fas fa-birthday-cake icon"></i>
+            <i v-else-if="item.icon === 'reception'" class="fas fa-users icon"></i>
+            <i v-else-if="item.icon === 'program'" class="fas fa-calendar-check icon"></i>
             <i v-else-if="item.icon === 'party'" class="fas fa-glass-cheers icon"></i>
           </div>
         </div>
