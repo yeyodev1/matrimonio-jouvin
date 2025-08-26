@@ -230,6 +230,11 @@ const shareViaWhatsApp = (invitation: IInvitation) => {
   window.open(whatsappUrl, '_blank')
 }
 
+const viewInvitation = (invitation: IInvitation) => {
+  const url = generateInvitationUrl(invitation)
+  window.open(url, '_blank')
+}
+
 // Lifecycle
 onMounted(() => {
   loadInvitations()
@@ -425,6 +430,13 @@ onMounted(() => {
             </td>
             <td class="actions-column">
               <div class="action-buttons">
+                <button
+                  @click="viewInvitation(invitation)"
+                  class="action-button view-button"
+                  title="Ver Invitación"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
                 <button
                   @click="copyInvitationUrl(invitation)"
                   class="action-button copy-button"
@@ -934,12 +946,12 @@ onMounted(() => {
     }
 
     &.actions-column {
-      width: 200px;
+      width: 240px;
       text-align: center;
-      min-width: 180px;
+      min-width: 220px;
 
       @media (max-width: 768px) {
-        min-width: 160px;
+        min-width: 200px;
       }
     }
   }
@@ -1136,6 +1148,15 @@ onMounted(() => {
 
     &:hover {
       background: color.adjust(#dc3545, $lightness: -10%);
+    }
+  }
+
+  &.view-button {
+    background: #667eea;
+    color: white;
+
+    &:hover {
+      background: color.adjust(#667eea, $lightness: -10%);
     }
   }
 }
