@@ -7,6 +7,7 @@ import CountdownMusicPlayer from '@/components/CountdownMusicPlayer.vue'
 import WeddingSchedule from '@/components/WeddingSchedule.vue'
 import DressCodeGifts from '@/components/DressCodeGifts.vue'
 import WeddingRSVP from '@/components/WeddingRSVP.vue'
+import couplePhoto from '@/assets/boda/fotaza.jpeg'
 
 // Router y Store
 const route = useRoute()
@@ -178,6 +179,11 @@ const toggleAudio = () => {
         <div class="letter" :class="{ 'letter-visible': isCardOpen }">
           <div class="letter-content">
             <div class="floral-decoration top"></div>
+            
+            <!-- Foto principal de la pareja -->
+            <div class="couple-photo">
+              <img :src="couplePhoto" alt="Génesis y Christopher" class="main-photo" />
+            </div>
             
             <h1 class="couple-names-full">Génesis y Christopher</h1>
             <div class="bible-verse">
@@ -866,6 +872,47 @@ const toggleAudio = () => {
       font-size: 1.2rem;
       margin: 0.3rem 0;
     }
+  }
+}
+
+// Estilos para la foto principal de la pareja
+.couple-photo {
+  margin: 0.5rem 0 1rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    margin: 0.8rem 0 1.2rem 0;
+  }
+}
+
+.main-photo {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba($dark-teal, 0.15);
+  border: 3px solid rgba($dusty-rose, 0.3);
+  transition: all 0.3s ease;
+  object-fit: cover;
+  aspect-ratio: 4/3;
+
+  @media (min-width: 768px) {
+    max-width: 320px;
+    border-radius: 15px;
+    box-shadow: 0 12px 30px rgba($dark-teal, 0.2);
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 350px;
+  }
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba($dark-teal, 0.25);
+    border-color: rgba($dusty-rose, 0.5);
   }
 }
 
