@@ -180,7 +180,6 @@ const toggleAudio = () => {
             <div class="floral-decoration top"></div>
             
             <h1 class="couple-names-full">Génesis y Christopher</h1>
-            
             <div class="bible-verse">
               <p class="verse-text">
                 "Ya no son dos, sino uno solo.<br>
@@ -217,6 +216,16 @@ const toggleAudio = () => {
 
             <div class="blessing-text">
               <p>Con el amor que nos une, la bendición de Dios<br>y el apoyo de nuestros padres</p>
+            </div>
+
+            <div class="parents-names">
+              <div class="parents-section">
+                <h4>Luis Benalcázar</h4>
+                <p>Alexandra Paredes</p>
+                <span class="ampersand">&</span>
+                <h4>César Jouvin</h4>
+                <p>Erika Ortiz</p>
+              </div>
             </div>
 
             <!-- Cronograma de actividades -->
@@ -789,6 +798,64 @@ const toggleAudio = () => {
     @media (min-width: 768px) {
       font-size: 0.8rem;
       line-height: 1.3;
+    }
+  }
+}
+
+.parents-names {
+  margin: 0.8rem 0;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    margin: 1rem 0;
+  }
+}
+
+.parents-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    gap: 0.4rem;
+  }
+
+  h4 {
+    @include accent-font(600);
+    font-size: 0.8rem;
+    color: $dark-teal;
+    margin: 0;
+    line-height: 1.2;
+
+    @media (min-width: 768px) {
+      font-size: 0.9rem;
+    }
+  }
+
+  p {
+    @include body-font(400);
+    font-size: 0.7rem;
+    color: rgba($dark-teal, 0.8);
+    margin: 0;
+    font-style: italic;
+
+    @media (min-width: 768px) {
+      font-size: 0.8rem;
+    }
+  }
+
+  .ampersand {
+    @include special-font(400);
+    font-size: 1rem;
+    color: $dusty-rose;
+    margin: 0.2rem 0;
+    font-weight: 300;
+
+    @media (min-width: 768px) {
+      font-size: 1.2rem;
+      margin: 0.3rem 0;
     }
   }
 }
