@@ -200,7 +200,7 @@ const toggleAudio = () => {
                 <h3>Ceremonia Religiosa</h3>
                 <p>Iglesia San Gabriel de la Dolorosa</p>
                 <p class="time">5:00 PM</p>
-                <a href="https://g.co/kgs/QMNEEmp" target="_blank" class="location-link">
+                <a href="https://maps.app.goo.gl/qDyRkgSb6Taoa3xj6" target="_blank" class="location-link">
                   <i class="fas fa-map-marker-alt"></i> Ubicación aquí
                 </a>
               </div>
@@ -209,7 +209,7 @@ const toggleAudio = () => {
                 <h3>Recepción</h3>
                 <p>Edificio Las Cámaras</p>
                 <p class="time">7:00 PM</p>
-                <a href="https://g.co/kgs/AhgZ7YS" target="_blank" class="location-link">
+                <a href="https://maps.app.goo.gl/RyGzAoWi9PaxpHLi6" target="_blank" class="location-link">
                   <i class="fas fa-map-marker-alt"></i> Ubicación aquí
                 </a>
               </div>
@@ -768,7 +768,7 @@ const toggleAudio = () => {
 
     i {
       font-size: 0.8rem;
-      
+
       @media (min-width: 768px) {
         font-size: 0.9rem;
       }
@@ -868,6 +868,7 @@ const toggleAudio = () => {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -875,12 +876,19 @@ const toggleAudio = () => {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
+
   40% {
     transform: translateY(-10px);
   }
+
   60% {
     transform: translateY(-5px);
   }
@@ -903,7 +911,7 @@ const toggleAudio = () => {
 
 .loading-spinner {
   text-align: center;
-  
+
   .spinner {
     width: 40px;
     height: 40px;
@@ -913,7 +921,7 @@ const toggleAudio = () => {
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
-  
+
   p {
     @include interface-font(400);
     font-size: 0.9rem;
@@ -923,8 +931,13 @@ const toggleAudio = () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 // Responsive adjustments
