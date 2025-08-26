@@ -8,7 +8,7 @@ import WeddingSchedule from '@/components/WeddingSchedule.vue'
 import DressCodeGifts from '@/components/DressCodeGifts.vue'
 import WeddingRSVP from '@/components/WeddingRSVP.vue'
 import couplePhoto from '@/assets/boda/fotaza.jpeg'
-import couplePhoto2 from '@/assets/boda/fotaza-2.png'
+import couplePhoto2 from '@/assets/boda/fotaza-2.jpeg'
 
 // Router y Store
 const route = useRoute()
@@ -852,18 +852,18 @@ const toggleAudio = () => {
   }
 
   p {
-    @include dancing-font(500);
-    font-size: 0.9rem;
+    @include extravagant-font(400);
+    font-size: 1rem;
     color: rgba($dark-teal, 0.8);
     margin: 0;
-    text-shadow: 0 1px 1px rgba($dark-teal, 0.05);
+    text-shadow: 0 1px 2px rgba($dark-teal, 0.1);
 
     @media (min-width: 768px) {
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
 
     @media (min-width: 1024px) {
-      font-size: 1.1rem;
+      font-size: 1.4rem;
     }
   }
 
