@@ -48,7 +48,7 @@ const formatTime = (seconds: number): string => {
 const updateCountdown = () => {
   const now = new Date().getTime()
   const distance = weddingDate.getTime() - now
-  
+
   if (distance > 0) {
     timeLeft.value = {
       days: Math.floor(distance / (1000 * 60 * 60 * 24)),
@@ -65,7 +65,7 @@ const updateCountdown = () => {
 const togglePlay = () => {
   const audio = props.audioRef || audioElement.value
   if (!audio) return
-  
+
   if (isPlaying.value) {
     audio.pause()
   } else {
@@ -179,7 +179,7 @@ const handleProgressClick = (event: MouseEvent) => {
 onMounted(() => {
   updateCountdown()
   countdownInterval = setInterval(updateCountdown, 1000)
-  
+
   // Setup listeners for internal audio element if no audioRef provided
   if (!props.audioRef && audioElement.value) {
     setupAudioListeners(audioElement.value)
@@ -190,7 +190,7 @@ onUnmounted(() => {
   if (countdownInterval) {
     clearInterval(countdownInterval)
   }
-  
+
   // Clean up listeners
   const audio = props.audioRef || audioElement.value
   if (audio) {
@@ -207,7 +207,7 @@ onUnmounted(() => {
       ref="audioElement"
       preload="metadata"
     >
-      <source src="/src/assets/song/voy-a-quererte.mp3" type="audio/mpeg">
+      <source src="/src/assets/song/Hijos-del-Amanecer.mp3" type="audio/mpeg">
       Tu navegador no soporta el elemento de audio.
     </audio>
 
@@ -333,7 +333,7 @@ onUnmounted(() => {
   z-index: 1000;
   min-width: 280px;
   text-align: center;
-  
+
   @media (max-width: 768px) {
     position: fixed;
     top: 1rem;
@@ -353,29 +353,29 @@ onUnmounted(() => {
 
 .countdown-header {
   margin-bottom: 1rem;
-  
+
   @media (max-width: 768px) {
     display: none;
   }
-  
+
   .month {
     @include special-font(400);
     font-size: 1.2rem;
     color: $dark-teal;
     margin: 0 0 0.25rem 0;
   }
-  
+
   .day {
     @include interface-font(400);
     font-size: 0.9rem;
     color: $charcoal;
     margin: 0;
-    
+
     .date {
       font-size: 1.1rem;
       font-weight: 600;
     }
-    
+
     .year {
       font-size: 0.8rem;
       opacity: 0.7;
@@ -385,23 +385,23 @@ onUnmounted(() => {
 
 .countdown-timer {
   margin-bottom: 1.5rem;
-  
+
   @media (max-width: 768px) {
     margin-bottom: 0.5rem;
   }
-  
+
   .faltan-label {
     @include interface-font(600);
     font-size: 0.8rem;
     color: $charcoal;
     margin: 0 0 0.5rem 0;
     letter-spacing: 1px;
-    
+
     @media (max-width: 768px) {
       display: none;
     }
   }
-  
+
   .mobile-countdown-message {
     @include interface-font(500);
     font-size: 0.7rem;
@@ -409,50 +409,50 @@ onUnmounted(() => {
     margin: 0 0 0.3rem 0;
     letter-spacing: 0.5px;
     display: none;
-    
+
     @media (max-width: 768px) {
       display: block;
     }
   }
-  
+
   .time-display {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
     margin-bottom: 0.5rem;
-    
+
     .time-number {
       @include interface-font(700);
       font-size: 1.8rem;
       color: $dark-teal;
       min-width: 2.5rem;
-      
+
       @media (max-width: 768px) {
         font-size: 1.4rem;
         min-width: 2rem;
       }
     }
-    
+
     .separator {
       font-size: 1.5rem;
       color: $dusty-rose;
       font-weight: 300;
-      
+
       @media (max-width: 768px) {
         font-size: 1.2rem;
       }
     }
   }
-  
+
   .time-labels {
     display: flex;
     justify-content: space-between;
-    
+
     @media (max-width: 768px) {
       display: none;
     }
-    
+
     .time-label {
       @include interface-font(500);
       font-size: 0.6rem;
@@ -461,7 +461,7 @@ onUnmounted(() => {
       letter-spacing: 0.5px;
       flex: 1;
       text-align: center;
-      
+
       @media (max-width: 768px) {
         font-size: 0.55rem;
       }
@@ -475,37 +475,37 @@ onUnmounted(() => {
     font-size: 1rem;
     color: $dark-teal;
     margin: 0 0 1rem 0;
-    
+
     @media (max-width: 768px) {
       display: none;
     }
   }
-  
+
   /* Desktop Player */
   .desktop-player {
     display: block;
-    
+
     @media (max-width: 768px) {
       display: none;
     }
   }
-  
+
   /* Mobile Player */
   .mobile-player {
     display: none;
-    
+
     @media (max-width: 768px) {
       display: block;
     }
   }
-  
+
   .audio-controls {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     margin-bottom: 1rem;
-    
+
     .control-btn {
       width: 40px;
       height: 40px;
@@ -519,17 +519,17 @@ onUnmounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
       }
-      
+
       &:not(:disabled):hover {
         background: rgba($dusty-rose, 0.2);
         transform: translateY(-1px);
       }
-      
+
       &.play-btn {
         width: 50px;
         height: 50px;
@@ -537,22 +537,22 @@ onUnmounted(() => {
         color: $white;
         font-size: 1.2rem;
         box-shadow: 0 4px 15px rgba($dusty-rose, 0.3);
-        
+
         &:hover {
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba($dusty-rose, 0.4);
         }
-        
+
         &.playing {
           background: linear-gradient(135deg, $dark-teal 0%, $primary-color 100%);
           box-shadow: 0 4px 15px rgba($dark-teal, 0.3);
-          
+
           &:hover {
             box-shadow: 0 6px 20px rgba($dark-teal, 0.4);
           }
         }
       }
-      
+
       &.volume-btn {
         &.muted {
           color: rgba($charcoal, 0.5);
@@ -560,14 +560,14 @@ onUnmounted(() => {
       }
     }
   }
-  
+
   .progress-section {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
     justify-content: center;
-    
+
     .time-display {
       @include interface-font(400);
       color: $charcoal;
@@ -576,7 +576,7 @@ onUnmounted(() => {
       text-align: center;
     }
   }
-  
+
   .progress-bar {
     flex: 1;
     max-width: 200px;
@@ -586,12 +586,12 @@ onUnmounted(() => {
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     &:hover {
       height: 8px;
       background: rgba($charcoal, 0.15);
     }
-    
+
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, $dusty-rose 0%, $dark-teal 100%);
@@ -599,7 +599,7 @@ onUnmounted(() => {
       transition: width 0.1s ease;
       position: relative;
     }
-    
+
     .progress-handle {
       position: absolute;
       top: 50%;
@@ -613,17 +613,17 @@ onUnmounted(() => {
       transition: all 0.1s ease;
       opacity: 0;
     }
-    
+
     &:hover .progress-handle {
       opacity: 1;
     }
   }
-  
+
   .volume-section {
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     .volume-slider {
       width: 80px;
       height: 3px;
@@ -632,7 +632,7 @@ onUnmounted(() => {
       outline: none;
       cursor: pointer;
       appearance: none;
-      
+
       &::-webkit-slider-thumb {
         appearance: none;
         width: 12px;
@@ -642,7 +642,7 @@ onUnmounted(() => {
         cursor: pointer;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
-      
+
       &::-moz-range-thumb {
         width: 12px;
         height: 12px;
@@ -654,7 +654,7 @@ onUnmounted(() => {
       }
     }
   }
-  
+
   /* Mobile Player Styles */
   .mobile-controls {
     display: flex;
@@ -662,7 +662,7 @@ onUnmounted(() => {
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
-    
+
     .mobile-btn {
       width: 32px;
       height: 32px;
@@ -676,11 +676,11 @@ onUnmounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       &:active {
         transform: scale(0.95);
       }
-      
+
       &.play-btn {
         width: 40px;
         height: 40px;
@@ -688,7 +688,7 @@ onUnmounted(() => {
         color: $white;
         font-size: 1rem;
         box-shadow: 0 2px 8px rgba($dusty-rose, 0.25);
-        
+
         &.playing {
           background: linear-gradient(135deg, $dark-teal 0%, $primary-color 100%);
           box-shadow: 0 2px 8px rgba($dark-teal, 0.25);
@@ -696,7 +696,7 @@ onUnmounted(() => {
       }
     }
   }
-  
+
   .mobile-progress {
     .progress-bar {
       width: 100%;
@@ -707,19 +707,20 @@ onUnmounted(() => {
       border-radius: 2px;
       position: relative;
       cursor: pointer;
-      
+
       .progress-fill {
         height: 100%;
         background: linear-gradient(90deg, $dusty-rose 0%, $dark-teal 100%);
         border-radius: 2px;
         transition: width 0.1s ease;
       }
-      
+
       .progress-handle {
-        display: none; /* Hide handle on mobile */
+        display: none;
+        /* Hide handle on mobile */
       }
     }
-    
+
     .time-info {
       display: none;
     }
@@ -727,9 +728,12 @@ onUnmounted(() => {
 }
 
 @keyframes progressPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
