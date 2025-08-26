@@ -3,6 +3,11 @@ import { ref } from 'vue'
 
 // Importar la imagen del código de vestimenta
 import dressCodeImage from '@/assets/codigo-vestimenta/codigo-vestimenta.webp'
+
+// Función para abrir la imagen de transferencia
+const openTransferImage = () => {
+  window.open('https://res.cloudinary.com/dpimsaaa4/image/upload/v1756219280/Ge%CC%81nesis_y_Christopher_-_Tu_historia_qczhsv.png', '_blank')
+}
 </script>
 
 <template>
@@ -42,11 +47,12 @@ import dressCodeImage from '@/assets/codigo-vestimenta/codigo-vestimenta.webp'
         <p>Su presencia en nuestra boda será el mejor regalo. Pero si desean darnos un obsequio, les dejamos esta opción:</p>
       </div>
       
-      <div class="transfer-section">
+      <div class="transfer-section" @click="openTransferImage">
         <h3 class="transfer-title">TRANSFERENCIA</h3>
         <div class="qr-code">
           <i class="fas fa-qrcode"></i>
         </div>
+        <p class="transfer-hint">Toca aquí para ver el QR</p>
       </div>
     </div>
   </div>
@@ -181,6 +187,16 @@ import dressCodeImage from '@/assets/codigo-vestimenta/codigo-vestimenta.webp'
 }
 
 .transfer-section {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 12px;
+  
+  &:hover {
+    background: rgba($dark-teal, 0.05);
+    transform: translateY(-2px);
+  }
+  
   .transfer-title {
     @include accent-font(600);
     font-size: 1rem;
@@ -191,6 +207,18 @@ import dressCodeImage from '@/assets/codigo-vestimenta/codigo-vestimenta.webp'
     @media (min-width: 768px) {
       font-size: 1.1rem;
       letter-spacing: 1.5px;
+    }
+  }
+  
+  .transfer-hint {
+    @include interface-font(400);
+    font-size: 0.8rem;
+    color: rgba($charcoal, 0.6);
+    margin-top: 0.5rem;
+    font-style: italic;
+    
+    @media (min-width: 768px) {
+      font-size: 0.9rem;
     }
   }
 }
