@@ -900,15 +900,14 @@ const toggleAudio = () => {
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba($dark-teal, 0.15);
-  border: 3px solid rgba($dusty-rose, 0.3);
+  border: 3px solid rgba($dusty-rose, 0.2);
   transition: all 0.3s ease;
-  object-fit: cover;
-  aspect-ratio: 4/3;
+  object-fit: contain;
+  display: block;
 
   @media (min-width: 768px) {
     max-width: 320px;
-    border-radius: 15px;
-    box-shadow: 0 12px 30px rgba($dark-teal, 0.2);
+    box-shadow: 0 10px 30px rgba($dark-teal, 0.2);
   }
 
   @media (min-width: 1024px) {
@@ -917,8 +916,8 @@ const toggleAudio = () => {
 
   &:hover {
     transform: scale(1.02);
-    box-shadow: 0 15px 35px rgba($dark-teal, 0.25);
-    border-color: rgba($dusty-rose, 0.5);
+    box-shadow: 0 12px 35px rgba($dark-teal, 0.25);
+    border-color: rgba($dusty-rose, 0.4);
   }
 }
 
