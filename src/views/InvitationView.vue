@@ -823,26 +823,35 @@ const toggleAudio = () => {
   }
 
   h4 {
-    @include accent-font(600);
-    font-size: 0.8rem;
+    @include extravagant-font(400);
+    font-size: 1.2rem;
     color: $dark-teal;
     margin: 0;
     line-height: 1.2;
+    text-shadow: 0 1px 2px rgba($dark-teal, 0.1);
 
     @media (min-width: 768px) {
-      font-size: 0.9rem;
+      font-size: 1.4rem;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 1.6rem;
     }
   }
 
   p {
-    @include body-font(400);
-    font-size: 0.7rem;
+    @include dancing-font(500);
+    font-size: 0.9rem;
     color: rgba($dark-teal, 0.8);
     margin: 0;
-    font-style: italic;
+    text-shadow: 0 1px 1px rgba($dark-teal, 0.05);
 
     @media (min-width: 768px) {
-      font-size: 0.8rem;
+      font-size: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 1.1rem;
     }
   }
 
