@@ -200,12 +200,18 @@ const toggleAudio = () => {
                 <h3>Ceremonia Religiosa</h3>
                 <p>Iglesia San Gabriel de la Dolorosa</p>
                 <p class="time">5:00 PM</p>
+                <a href="https://g.co/kgs/QMNEEmp" target="_blank" class="location-link">
+                  <i class="fas fa-map-marker-alt"></i> Ubicación aquí
+                </a>
               </div>
               
               <div class="reception-section">
                 <h3>Recepción</h3>
                 <p>Edificio Las Cámaras</p>
                 <p class="time">7:00 PM</p>
+                <a href="https://g.co/kgs/AhgZ7YS" target="_blank" class="location-link">
+                  <i class="fas fa-map-marker-alt"></i> Ubicación aquí
+                </a>
               </div>
             </div>
 
@@ -738,6 +744,42 @@ const toggleAudio = () => {
       color: $warm-brown;
       font-size: 0.8rem;
 
+      @media (min-width: 768px) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .location-link {
+    @include interface-font(500);
+    font-size: 0.7rem;
+    color: $dusty-rose;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    background: rgba($dusty-rose, 0.1);
+    border: 1px solid rgba($dusty-rose, 0.3);
+    transition: all 0.3s ease;
+
+    @media (min-width: 768px) {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+    }
+
+    &:hover {
+      background: rgba($dusty-rose, 0.2);
+      border-color: $dusty-rose;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba($dusty-rose, 0.2);
+    }
+
+    i {
+      font-size: 0.8rem;
+      
       @media (min-width: 768px) {
         font-size: 0.9rem;
       }
