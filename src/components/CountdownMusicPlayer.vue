@@ -172,6 +172,7 @@ onUnmounted(() => {
     <!-- Contador regresivo -->
     <div class="countdown-timer">
       <p class="faltan-label">FALTAN</p>
+      <p class="mobile-countdown-message">Tiempo para la boda</p>
       <div class="time-display">
         <span class="time-number">{{ String(timeLeft.days).padStart(2, '0') }}</span>
         <span class="separator">:</span>
@@ -286,16 +287,28 @@ onUnmounted(() => {
   text-align: center;
   
   @media (max-width: 768px) {
-    bottom: 1rem;
-    right: 1rem;
-    left: 1rem;
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translateX(-50%);
     min-width: auto;
-    padding: 1rem;
+    width: 90%;
+    max-width: 300px;
+    padding: 0.5rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   }
 }
 
 .countdown-header {
   margin-bottom: 1rem;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
   
   .month {
     @include special-font(400);
@@ -325,12 +338,33 @@ onUnmounted(() => {
 .countdown-timer {
   margin-bottom: 1.5rem;
   
+  @media (max-width: 768px) {
+    margin-bottom: 0.5rem;
+  }
+  
   .faltan-label {
     @include interface-font(600);
     font-size: 0.8rem;
     color: $charcoal;
     margin: 0 0 0.5rem 0;
     letter-spacing: 1px;
+    
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+  
+  .mobile-countdown-message {
+    @include interface-font(500);
+    font-size: 0.7rem;
+    color: $dark-teal;
+    margin: 0 0 0.3rem 0;
+    letter-spacing: 0.5px;
+    display: none;
+    
+    @media (max-width: 768px) {
+      display: block;
+    }
   }
   
   .time-display {
@@ -367,6 +401,10 @@ onUnmounted(() => {
     display: flex;
     justify-content: space-between;
     
+    @media (max-width: 768px) {
+      display: none;
+    }
+    
     .time-label {
       @include interface-font(500);
       font-size: 0.6rem;
@@ -389,6 +427,10 @@ onUnmounted(() => {
     font-size: 1rem;
     color: $dark-teal;
     margin: 0 0 1rem 0;
+    
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
   
   /* Desktop Player */
@@ -570,17 +612,17 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
     
     .mobile-btn {
-      width: 45px;
-      height: 45px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: none;
-      background: rgba($charcoal, 0.1);
+      background: rgba($charcoal, 0.08);
       color: $charcoal;
-      font-size: 1rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
@@ -592,16 +634,16 @@ onUnmounted(() => {
       }
       
       &.play-btn {
-        width: 55px;
-        height: 55px;
+        width: 40px;
+        height: 40px;
         background: linear-gradient(135deg, $dusty-rose 0%, $warm-brown 100%);
         color: $white;
-        font-size: 1.3rem;
-        box-shadow: 0 4px 15px rgba($dusty-rose, 0.3);
+        font-size: 1rem;
+        box-shadow: 0 2px 8px rgba($dusty-rose, 0.25);
         
         &.playing {
           background: linear-gradient(135deg, $dark-teal 0%, $primary-color 100%);
-          box-shadow: 0 4px 15px rgba($dark-teal, 0.3);
+          box-shadow: 0 2px 8px rgba($dark-teal, 0.25);
         }
       }
     }
@@ -610,10 +652,10 @@ onUnmounted(() => {
   .mobile-progress {
     .progress-bar {
       width: 100%;
-      max-width: 250px;
-      height: 4px;
-      margin: 0 auto 0.5rem;
-      background: rgba($charcoal, 0.1);
+      max-width: 200px;
+      height: 3px;
+      margin: 0 auto 0.25rem;
+      background: rgba($charcoal, 0.08);
       border-radius: 2px;
       position: relative;
       cursor: pointer;
@@ -631,13 +673,7 @@ onUnmounted(() => {
     }
     
     .time-info {
-      display: flex;
-      justify-content: space-between;
-      @include interface-font(400);
-      color: rgba($charcoal, 0.7);
-      font-size: 0.75rem;
-      max-width: 250px;
-      margin: 0 auto;
+      display: none;
     }
   }
 }
