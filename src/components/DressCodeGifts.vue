@@ -44,15 +44,22 @@ const openTransferImage = () => {
       </div>
       
       <div class="gift-message">
-        <p>Su presencia en nuestra boda será el mejor regalo. Pero si desean darnos un obsequio, les dejamos esta opción:</p>
+        <p>Su presencia en nuestra boda será el mejor regalo. Pero si desean darnos un obsequio, les dejamos estas opciones:</p>
       </div>
       
+      <div class="transfer-section">
+        <h3 class="transfer-title">SOBRE CERRADO</h3>
+        <div class="qr-code">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <p class="transfer-hint">Se entrega en recepción</p>
+      </div>
       <div class="transfer-section" @click="openTransferImage">
         <h3 class="transfer-title">TRANSFERENCIA</h3>
         <div class="qr-code">
-          <i class="fas fa-qrcode"></i>
+          <i class="fas fa-money-bill-wave"></i>
         </div>
-        <p class="transfer-hint">Toca aquí para ver el QR</p>
+        <p class="transfer-hint">Toca aquí para ver la cuenta</p>
       </div>
     </div>
   </div>
@@ -191,12 +198,12 @@ const openTransferImage = () => {
   transition: all 0.3s ease;
   padding: 1rem;
   border-radius: 12px;
-  
+
   &:hover {
     background: rgba($dark-teal, 0.05);
     transform: translateY(-2px);
   }
-  
+
   .transfer-title {
     @include accent-font(600);
     font-size: 1rem;
@@ -209,14 +216,14 @@ const openTransferImage = () => {
       letter-spacing: 1.5px;
     }
   }
-  
+
   .transfer-hint {
     @include interface-font(400);
     font-size: 0.8rem;
     color: rgba($charcoal, 0.6);
     margin-top: 0.5rem;
     font-style: italic;
-    
+
     @media (min-width: 768px) {
       font-size: 0.9rem;
     }
