@@ -37,19 +37,19 @@ const isConfirmed = computed(() => {
 // Computed para generar mensaje personalizado
 const personalizedMessage = computed(() => {
   const baseMessage = `¡Hola! Soy ${props.guestName} y confirmo mi asistencia a la boda de Génesis y Christopher el 1 de Noviembre de 2025.`
-  
+
   if (props.companionsCount > 0) {
     const companionText = props.companionsCount === 1 ? '1 acompañante' : `${props.companionsCount} acompañantes`
     return `${baseMessage} Asistiré con ${companionText}.`
   }
-  
+
   return baseMessage
 })
 
 // Función para confirmar asistencia
 const confirmAttendance = async () => {
   if (isConfirming.value) return
-  
+
   isConfirming.value = true
   try {
     await invitationStore.confirmInvitation(props.invitationId, true)
@@ -70,7 +70,7 @@ const openWhatsApp = () => {
 
 // Función para contactar por WhatsApp si hay problemas
 const contactSupport = () => {
-  const phoneNumber = '+573008765432' // Número de WhatsApp para soporte
+  const phoneNumber = '593992218049' // Número de WhatsApp para soporte
   const message = encodeURIComponent(`Hola, soy ${props.guestName} y tengo un problema con mi confirmación de asistencia a la boda.`)
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`
   window.open(whatsappUrl, '_blank')
@@ -295,11 +295,11 @@ const contactSupport = () => {
 
   i {
     animation: leafFloat 3s ease-in-out infinite;
-    
+
     &:nth-child(2) {
       animation-delay: 0.5s;
     }
-    
+
     &:nth-child(3) {
       animation-delay: 1s;
     }
@@ -427,7 +427,7 @@ const contactSupport = () => {
   @media (min-width: 768px) {
     padding: 1rem 2.5rem;
     font-size: 1.1rem;
-    
+
     i {
       font-size: 1.3rem;
     }
@@ -549,7 +549,7 @@ const contactSupport = () => {
   @media (min-width: 768px) {
     padding: 1rem 2rem;
     font-size: 1rem;
-    
+
     i {
       font-size: 1.1rem;
     }
@@ -561,7 +561,7 @@ const contactSupport = () => {
     opacity: 0.7;
     cursor: not-allowed;
     transform: none !important;
-    
+
     &:hover {
       transform: none !important;
       box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
@@ -626,16 +626,16 @@ const contactSupport = () => {
 
   @media (min-width: 768px) {
     font-size: 2.5rem;
-    
+
     &::before,
     &::after {
       font-size: 2rem;
     }
-    
+
     &::before {
       left: -3rem;
     }
-    
+
     &::after {
       right: -3rem;
     }
@@ -644,18 +644,24 @@ const contactSupport = () => {
 
 /* Animaciones */
 @keyframes heartbeat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
 }
 
 @keyframes leafFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
+
   50% {
     transform: translateY(-5px) rotate(5deg);
   }
@@ -665,19 +671,24 @@ const contactSupport = () => {
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     transform: scale(1);
   }
 }
 
 @keyframes confirmPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.1);
     opacity: 0.8;
@@ -722,7 +733,7 @@ const contactSupport = () => {
 
   .te-esperamos {
     font-size: 1.7rem;
-    
+
     &::before,
     &::after {
       display: none;
