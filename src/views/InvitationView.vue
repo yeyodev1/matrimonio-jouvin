@@ -189,6 +189,20 @@ const toggleAudio = () => {
               <p class="verse-reference">Mateo 19:6</p>
             </div>
 
+            <div class="blessing-text">
+              <p>Con el amor que nos une, la bendición de Dios<br>y el apoyo de nuestros padres</p>
+            </div>
+
+            <div class="parents-names">
+              <div class="parents-section">
+                <h4>Luis Benalcázar</h4>
+                <p>Alexandra Paredes</p>
+                <span class="ampersand">&</span>
+                <h4>César Jouvin</h4>
+                <p>Erika Ortiz</p>
+              </div>
+            </div>
+
             <div class="wedding-details">
               <div class="date-section">
                 <h3>Fecha</h3>
@@ -211,20 +225,6 @@ const toggleAudio = () => {
                 <a href="https://maps.app.goo.gl/RyGzAoWi9PaxpHLi6" target="_blank" class="location-link">
                   <i class="fas fa-map-marker-alt"></i> Ubicación aquí
                 </a>
-              </div>
-            </div>
-
-            <div class="blessing-text">
-              <p>Con el amor que nos une, la bendición de Dios<br>y el apoyo de nuestros padres</p>
-            </div>
-
-            <div class="parents-names">
-              <div class="parents-section">
-                <h4>Luis Benalcázar</h4>
-                <p>Alexandra Paredes</p>
-                <span class="ampersand">&</span>
-                <h4>César Jouvin</h4>
-                <p>Erika Ortiz</p>
               </div>
             </div>
 
