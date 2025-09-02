@@ -156,7 +156,7 @@ const invitationStats = computed(() => {
 // Cargar invitaciones existentes al montar el componente
 onMounted(async () => {
   try {
-    await invitationStore.fetchInvitations({ page: 1, limit: 100 })
+    await invitationStore.fetchAllInvitations()
   } catch (error) {
     console.error('Error loading invitations:', error)
   }
