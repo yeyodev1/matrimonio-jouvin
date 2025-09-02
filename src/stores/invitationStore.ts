@@ -314,6 +314,40 @@ export const useInvitationStore = defineStore('invitation', () => {
   }
 
   /**
+   * Obtener todas las invitaciones sin límite
+   */
+  const fetchAllInvitations = async (): Promise<void> => {
+    loading.value.fetching = true
+    clearError('fetch')
+    
+    try {
+      // Hacer una primera llamada para obtener el total
+      const response = await invitationService.getAllInvitations({ page: 1, limit: 1 })
+      const totalCount = response.data.pagination?.totalCount || 0
+      
+      if (totalCount > 0) {
+        // Hacer una segunda llamada para obtener todas las invitaciones
+        const allResponse = await invitationService.getAllInvitations({ page: 1, limit: totalCount })
+        const { invitations: fetchedInvitations, pagination: paginationData } = allResponse.data
+        
+        if (fetchedInvitations) {
+          invitations.value = fetchedInvitations
+        }
+        
+        if (paginationData) {
+          pagination.value = paginationData
+        }
+      } else {
+        invitations.value = []
+      }
+    } catch (error) {
+      handleError('fetch', error)
+    } finally {
+      loading.value.fetching = false
+    }
+  }
+
+  /**
    * Buscar una invitación en la lista local por ID
    */
   const findInvitationById = (id: string): IInvitation | undefined => {
@@ -399,6 +433,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     confirmInvitation,
     loadMoreInvitations,
     refreshInvitations,
+    fetchAllInvitations,
     
     // Utilidades
     findInvitationById,
